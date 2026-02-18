@@ -266,6 +266,10 @@ export default function About() {
   const revealRef = useStaggerReveal();
   const parallaxRef = useParallax();
   const rootRef = useMergedRefs(revealRef as any, parallaxRef as any);
+  useEffect(() => {
+  document.documentElement.classList.add("ab-anim");
+  return () => document.documentElement.classList.remove("ab-anim");
+}, []);
 
   const [heroImgOk, setHeroImgOk] = useState(true);
 

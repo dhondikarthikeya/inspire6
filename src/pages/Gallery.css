@@ -129,10 +129,82 @@
   }
 }
 /* ==========================
-   Scroll animation (same system)
+   Gallery base styles (keep your existing styling here if you already have)
    ========================== */
 
-[data-anim] {
+/* Example minimal base – you can keep/replace with your current styles */
+.gallery {
+  width: 100%;
+}
+
+.galleryHero {
+  padding: 70px 18px 30px;
+}
+
+.galleryHero__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.galleryHero__title {
+  font-size: clamp(28px, 4vw, 48px);
+  line-height: 1.1;
+  margin: 0 0 10px;
+}
+
+.galleryHero__highlight {
+  text-decoration: underline;
+}
+
+.galleryHero__subtitle {
+  max-width: 800px;
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+.galleryGrid {
+  padding: 24px 18px 80px;
+}
+
+.galleryGrid__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.galleryCard {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.galleryCard img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.02);
+}
+
+.galleryCard__overlay {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 13px;
+  backdrop-filter: blur(6px);
+}
+
+/* ==========================
+   Scroll animation (scoped like About)
+   ========================== */
+
+.ab-anim [data-anim] {
   --stagger: 0;
   opacity: 0;
   transform: translate3d(0, 18px, 0) scale(0.99);
@@ -145,28 +217,29 @@
   will-change: transform, opacity, filter;
 }
 
-[data-anim].is-in {
+.ab-anim [data-anim].is-in {
   opacity: 1;
   transform: translate3d(0, 0, 0) scale(1);
   filter: blur(0);
 }
 
-[data-anim="fade"] { transform: none; }
+/* Variants */
+.ab-anim [data-anim="fade"] { transform: none; }
 
-[data-anim="pop"] {
+.ab-anim [data-anim="pop"] {
   transform: translate3d(0, 10px, 0) scale(0.96);
 }
 
-[data-anim="slideL"] {
+.ab-anim [data-anim="slideL"] {
   transform: translate3d(-28px, 0, 0) scale(0.99);
 }
 
-[data-anim="slideR"] {
+.ab-anim [data-anim="slideR"] {
   transform: translate3d(28px, 0, 0) scale(0.99);
 }
 
 /* Parallax targets */
-[data-parallax] {
+.ab-anim [data-parallax] {
   --py: 0px;
   --pr: 0deg;
   transform: translate3d(0, var(--py), 0) rotate(var(--pr));
@@ -174,14 +247,15 @@
   will-change: transform;
 }
 
+/* Accessibility */
 @media (prefers-reduced-motion: reduce) {
-  [data-anim] {
+  .ab-anim [data-anim] {
     opacity: 1 !important;
     transform: none !important;
     filter: none !important;
     transition: none !important;
   }
-  [data-parallax] {
+  .ab-anim [data-parallax] {
     transform: none !important;
     transition: none !important;
   }

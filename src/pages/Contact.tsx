@@ -1,4 +1,3 @@
-// Contact.tsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import "./Contact.css";
 
@@ -10,7 +9,7 @@ type FormType = {
 
 const SITE = {
   phone: "+918374382391",
-  whatsappNumber: "91.8374382391", // digits only (country code + number)
+  whatsappNumber: "918374382391", // ✅ digits only (IMPORTANT)
   email: "info@inspirecollegehm.com",
 };
 
@@ -29,7 +28,7 @@ function digitsOnly(value: string) {
 }
 
 /* =========================
-   SAME scroll animation hook (About/Courses/Admissions/Placement/Gallery)
+   SAME scroll animation hook (safe)
    ========================= */
 function useStaggerReveal() {
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -63,7 +62,7 @@ function useStaggerReveal() {
       });
     });
 
-    // Fallback stagger for elements outside groups
+    // Fallback stagger
     let i = 0;
     els.forEach((el) => {
       if (inGroup.has(el)) return;
@@ -157,6 +156,12 @@ export default function Contact(): JSX.Element {
   const parallaxRef = useParallax();
   const rootRef = useMergedRefs(revealRef as any, parallaxRef as any);
 
+  // ✅ IMPORTANT: enable animations only on this page
+  useEffect(() => {
+    document.documentElement.classList.add("ab-anim");
+    return () => document.documentElement.classList.remove("ab-anim");
+  }, []);
+
   const [form, setForm] = useState<FormType>({
     name: "",
     phone: "",
@@ -197,14 +202,12 @@ Please share eligibility, fees & admission steps.`;
 
   return (
     <div className="contact" ref={rootRef}>
-      {/* ================= HERO (KEEP IMAGE) ================= */}
+      {/* HERO */}
       <section className="contactHero" data-anim-group>
         <div className="contactHero__inner">
-          {/* LEFT CONTENT */}
           <div className="contactHero__left">
             <h1 className="contactHero__title" data-anim="rise">
-              Let’s Connect &{" "}
-              <span className="contactHero__highlight">Start Your Journey</span>
+              Let’s Connect & <span className="contactHero__highlight">Start Your Journey</span>
             </h1>
 
             <p className="contactHero__subtitle" data-anim="rise">
@@ -234,22 +237,19 @@ Please share eligibility, fees & admission steps.`;
             </div>
           </div>
 
-          {/* RIGHT SIDE IMAGE */}
           <div className="contactHero__right" data-anim="slideR">
             <div className="contactHero__imageCard" data-parallax>
               <img src="/images/wow2.png" alt="Contact Inspire College" />
               <div className="contactHero__overlay">
                 <div className="contactHero__overlayTitle">INSPIRE • ICHM–Armoor</div>
-                <div className="contactHero__overlaySub">
-                  Admissions Open • Limited Seats • Apply Today
-                </div>
+                <div className="contactHero__overlaySub">Admissions Open • Limited Seats • Apply Today</div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ================= FORM BELOW HERO ================= */}
+      {/* FORM */}
       <section id="form" className="contactFormSection" data-anim-group>
         <div className="contactFormSection__inner">
           <aside className="contactFormCard" aria-label="Quick enquiry form" data-anim="pop">
@@ -317,9 +317,7 @@ Please share eligibility, fees & admission steps.`;
                 Send Enquiry
               </button>
 
-              <div className="form__footerNote">
-                We’ll reply with eligibility, fees &amp; admission steps.
-              </div>
+              <div className="form__footerNote">We’ll reply with eligibility, fees &amp; admission steps.</div>
 
               <div className="form__meta">
                 <a className="metaLink" href={`tel:${SITE.phone}`}>

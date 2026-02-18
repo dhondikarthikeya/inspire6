@@ -9,7 +9,7 @@ const MENU = [
   { to: "/admissions", label: "Admissions" },
   { to: "/placement", label: "Placement" },
   { to: "/gallery", label: "Gallery" },
-  { to: "/notices", label: "Notices" },
+  // { to: "/notices", label: "Notices" },
   { to: "/contact", label: "Contact" },
 ];
 

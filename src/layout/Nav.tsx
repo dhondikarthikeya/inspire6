@@ -22,7 +22,7 @@ export default function Nav() {
     { to: "/admissions", label: "Admissions" },
     { to: "/facilities", label: "Facilities" },
     { to: "/gallery", label: "Gallery" },
-    { to: "/notices", label: "Notices" },
+    // { to: "/notices", label: "Notices" },
     { to: "/contact", label: "Contact" },
   ];
 

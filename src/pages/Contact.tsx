@@ -9,7 +9,7 @@ type FormType = {
 
 const SITE = {
   phone: "+918374382391",
-  whatsappNumber: "918374382391", // ✅ digits only (IMPORTANT)
+  whatsappNumber: "918374382391", // ✅ digits only
   email: "info@inspirecollegehm.com",
 };
 
@@ -28,17 +28,17 @@ function digitsOnly(value: string) {
 }
 
 /* =========================
-   SAME scroll animation hook (safe)
+   scroll animation hook (SCOPED + BULLETPROOF)
    ========================= */
-function useStaggerReveal() {
-  const rootRef = useRef<HTMLDivElement | null>(null);
-
+function useStaggerReveal(rootRef: React.RefObject<HTMLElement>) {
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
 
+    // ✅ only this page root becomes "js ready"
+    root.setAttribute("data-js", "1");
+
     const prefersReduced =
-      typeof window !== "undefined" &&
       window.matchMedia &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -50,7 +50,7 @@ function useStaggerReveal() {
       return;
     }
 
-    // Group-based stagger
+    // group-based stagger
     const groups = Array.from(root.querySelectorAll<HTMLElement>("[data-anim-group]"));
     const inGroup = new Set<HTMLElement>();
 
@@ -62,7 +62,7 @@ function useStaggerReveal() {
       });
     });
 
-    // Fallback stagger
+    // fallback stagger
     let i = 0;
     els.forEach((el) => {
       if (inGroup.has(el)) return;
@@ -82,20 +82,15 @@ function useStaggerReveal() {
 
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, []);
-
-  return rootRef;
+  }, [rootRef]);
 }
 
-function useParallax() {
-  const rootRef = useRef<HTMLDivElement | null>(null);
-
+function useParallax(rootRef: React.RefObject<HTMLElement>) {
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
 
     const prefersReduced =
-      typeof window !== "undefined" &&
       window.matchMedia &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -116,10 +111,8 @@ function useParallax() {
         const t = (center - vh / 2) / (vh / 2);
         const clamped = Math.max(-1, Math.min(1, t));
 
-        const y = clamped * -10;
-        const r = clamped * 0.6;
-        el.style.setProperty("--py", `${y}px`);
-        el.style.setProperty("--pr", `${r}deg`);
+        el.style.setProperty("--py", `${clamped * -10}px`);
+        el.style.setProperty("--pr", `${clamped * 0.6}deg`);
       }
     };
 
@@ -137,30 +130,20 @@ function useParallax() {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-  }, []);
-
-  return rootRef;
-}
-
-function useMergedRefs<T extends HTMLElement>(...refs: React.RefObject<T>[]) {
-  const merged = useRef<T | null>(null);
-  useEffect(() => {
-    refs.forEach((r) => ((r as any).current = merged.current));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  return merged;
+  }, [rootRef]);
 }
 
 export default function Contact(): JSX.Element {
-  const revealRef = useStaggerReveal();
-  const parallaxRef = useParallax();
-  const rootRef = useMergedRefs(revealRef as any, parallaxRef as any);
+  const rootRef = useRef<HTMLDivElement | null>(null);
 
-  // ✅ IMPORTANT: enable animations only on this page
+  // ✅ add/remove only while this page exists
   useEffect(() => {
     document.documentElement.classList.add("ab-anim");
     return () => document.documentElement.classList.remove("ab-anim");
   }, []);
+
+  useStaggerReveal(rootRef as any);
+  useParallax(rootRef as any);
 
   const [form, setForm] = useState<FormType>({
     name: "",
@@ -211,8 +194,7 @@ Please share eligibility, fees & admission steps.`;
             </h1>
 
             <p className="contactHero__subtitle" data-anim="rise">
-              Have questions about admissions, courses, or eligibility? Our team
-              is here to guide you every step of the way.
+              Have questions about admissions, courses, or eligibility? Our team is here to guide you every step of the way.
             </p>
 
             <div className="contactHero__actions" data-anim="pop">

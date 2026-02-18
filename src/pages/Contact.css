@@ -4,12 +4,7 @@
 
 .contact {
   min-height: 100vh;
-  background: linear-gradient(
-    180deg,
-    #f7fbff 0%,
-    #ffffff 60%,
-    #ffffff 100%
-  );
+  background: linear-gradient(180deg, #f7fbff 0%, #ffffff 60%, #ffffff 100%);
   color: #111;
 }
 
@@ -154,11 +149,9 @@
   .contactHero__inner {
     grid-template-columns: 1fr;
   }
-
   .contactHero__right {
     justify-content: center;
   }
-
   .contactHero__imageCard img {
     height: 340px;
   }
@@ -168,23 +161,17 @@
   .contactHero__title {
     font-size: 30px;
   }
-
   .contactHero__actions {
     flex-direction: column;
   }
-
   .contactHero__btn {
     width: 100%;
     text-align: center;
   }
 }
-/* ================= CONTACT PAGE FORM ONLY =================
-   Scoped so it won't affect Home page forms.
-   IMPORTANT: keep the wrapper as:
-   <section className="contactFormSection"> ... <aside className="contactFormCard"> ...
-*/
 
-/* Section wrapper */
+/* ================= CONTACT PAGE FORM ONLY ================= */
+
 .contactFormSection {
   padding: 60px 20px;
   background: #ffffff;
@@ -195,7 +182,6 @@
   margin: 0 auto;
 }
 
-/* Card */
 .contactFormSection .contactFormCard {
   background: #ffffff;
   border: 1px solid #e6eaf3;
@@ -204,7 +190,6 @@
   padding: 30px 28px 24px;
 }
 
-/* Header */
 .contactFormSection .formHeader__title {
   font-size: 28px;
   font-weight: 700;
@@ -218,14 +203,12 @@
   margin: 0 0 22px;
 }
 
-/* Form layout */
 .contactFormSection .form {
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
 
-/* Field */
 .contactFormSection .field {
   display: flex;
   flex-direction: column;
@@ -243,7 +226,6 @@
   font-weight: 700;
 }
 
-/* Inputs & select */
 .contactFormSection .field__input {
   height: 54px;
   padding: 0 16px;
@@ -265,7 +247,6 @@
   box-shadow: 0 0 0 4px rgba(157, 180, 255, 0.25);
 }
 
-/* Select arrow */
 .contactFormSection select.field__input {
   appearance: none;
   padding-right: 40px;
@@ -276,7 +257,6 @@
   background-repeat: no-repeat;
 }
 
-/* Error + hint */
 .contactFormSection .is-error {
   border-color: #ef4444 !important;
   box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12) !important;
@@ -292,7 +272,6 @@
   color: #6b7280;
 }
 
-/* Button (only inside contact form section) */
 .contactFormSection .btn--gold {
   margin-top: 10px;
   height: 56px;
@@ -318,7 +297,6 @@
   width: 100%;
 }
 
-/* Footer note */
 .contactFormSection .form__footerNote {
   text-align: center;
   font-size: 13.5px;
@@ -326,7 +304,6 @@
   margin-top: 6px;
 }
 
-/* Meta links */
 .contactFormSection .form__meta {
   margin-top: 10px;
   display: flex;
@@ -344,30 +321,22 @@
 .contactFormSection .metaLink:hover {
   text-decoration: underline;
 }
-/* ==========================
-   Contact page base styles
-   (keep your existing Contact styles here)
-   ========================== */
-
-/* If you already have styling in Contact.css,
-   keep it above — just ensure the animation block below is included. */
-
 
 /* ==========================
-   Scroll animation (safe)
+   Scroll animation (SCOPED + BULLETPROOF)
    ✅ visible by default
-   ✅ animate only when .ab-anim is present
+   ✅ only hides inside Contact page when data-js="1"
    ========================== */
 
-/* default = show content */
-[data-anim] {
+/* default: always visible */
+.contact [data-anim] {
   opacity: 1;
   transform: none;
   filter: none;
 }
 
-/* animate only when JS enabled */
-.ab-anim [data-anim] {
+/* animate ONLY for contact page, ONLY after JS sets data-js="1" */
+html.ab-anim .contact[data-js="1"] [data-anim] {
   --stagger: 0;
   opacity: 0;
   transform: translate3d(0, 18px, 0) scale(0.99);
@@ -380,29 +349,29 @@
   will-change: transform, opacity, filter;
 }
 
-.ab-anim [data-anim].is-in {
+html.ab-anim .contact[data-js="1"] [data-anim].is-in {
   opacity: 1;
   transform: translate3d(0, 0, 0) scale(1);
   filter: blur(0);
 }
 
 /* Variants */
-.ab-anim [data-anim="fade"] { transform: none; }
+html.ab-anim .contact[data-js="1"] [data-anim="fade"] { transform: none; }
 
-.ab-anim [data-anim="pop"] {
+html.ab-anim .contact[data-js="1"] [data-anim="pop"] {
   transform: translate3d(0, 10px, 0) scale(0.96);
 }
 
-.ab-anim [data-anim="slideL"] {
+html.ab-anim .contact[data-js="1"] [data-anim="slideL"] {
   transform: translate3d(-28px, 0, 0) scale(0.99);
 }
 
-.ab-anim [data-anim="slideR"] {
+html.ab-anim .contact[data-js="1"] [data-anim="slideR"] {
   transform: translate3d(28px, 0, 0) scale(0.99);
 }
 
 /* Parallax targets */
-.ab-anim [data-parallax] {
+html.ab-anim .contact[data-js="1"] [data-parallax] {
   --py: 0px;
   --pr: 0deg;
   transform: translate3d(0, var(--py), 0) rotate(var(--pr));
@@ -412,13 +381,13 @@
 
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
-  .ab-anim [data-anim] {
+  html.ab-anim .contact[data-js="1"] [data-anim] {
     opacity: 1 !important;
     transform: none !important;
     filter: none !important;
     transition: none !important;
   }
-  .ab-anim [data-parallax] {
+  html.ab-anim .contact[data-js="1"] [data-parallax] {
     transform: none !important;
     transition: none !important;
   }

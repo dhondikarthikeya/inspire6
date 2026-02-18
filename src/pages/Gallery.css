@@ -4,12 +4,7 @@
 
 .gallery {
   min-height: 100vh;
-  background: linear-gradient(
-    180deg,
-    #f7fbff 0%,
-    #ffffff 60%,
-    #ffffff 100%
-  );
+  background: linear-gradient(180deg, #f7fbff 0%, #ffffff 60%, #ffffff 100%);
   color: #111;
 }
 
@@ -128,21 +123,24 @@
     height: 240px;
   }
 }
+
 /* ==========================
-   Scroll animation (safe)
+   Scroll animation (BULLETPROOF)
    ✅ visible by default
-   ✅ animate only when .ab-anim is present
+   ✅ only hides when:
+      1) html has .ab-anim
+      2) page root has data-js="1"
    ========================== */
 
-/* default = show content */
+/* default: always visible */
 [data-anim] {
   opacity: 1;
   transform: none;
   filter: none;
 }
 
-/* animate only when JS enabled */
-.ab-anim [data-anim] {
+/* hide ONLY after JS sets data-js="1" */
+.ab-anim [data-js="1"] [data-anim] {
   --stagger: 0;
   opacity: 0;
   transform: translate3d(0, 18px, 0) scale(0.99);
@@ -155,31 +153,31 @@
   will-change: transform, opacity, filter;
 }
 
-.ab-anim [data-anim].is-in {
+.ab-anim [data-js="1"] [data-anim].is-in {
   opacity: 1;
   transform: translate3d(0, 0, 0) scale(1);
   filter: blur(0);
 }
 
 /* Variants */
-.ab-anim [data-anim="fade"] {
+.ab-anim [data-js="1"] [data-anim="fade"] {
   transform: none;
 }
 
-.ab-anim [data-anim="pop"] {
+.ab-anim [data-js="1"] [data-anim="pop"] {
   transform: translate3d(0, 10px, 0) scale(0.96);
 }
 
-.ab-anim [data-anim="slideL"] {
+.ab-anim [data-js="1"] [data-anim="slideL"] {
   transform: translate3d(-28px, 0, 0) scale(0.99);
 }
 
-.ab-anim [data-anim="slideR"] {
+.ab-anim [data-js="1"] [data-anim="slideR"] {
   transform: translate3d(28px, 0, 0) scale(0.99);
 }
 
 /* Parallax targets */
-.ab-anim [data-parallax] {
+.ab-anim [data-js="1"] [data-parallax] {
   --py: 0px;
   --pr: 0deg;
   transform: translate3d(0, var(--py), 0) rotate(var(--pr));
@@ -189,14 +187,14 @@
 
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
-  .ab-anim [data-anim] {
+  .ab-anim [data-js="1"] [data-anim] {
     opacity: 1 !important;
     transform: none !important;
     filter: none !important;
     transition: none !important;
   }
 
-  .ab-anim [data-parallax] {
+  .ab-anim [data-js="1"] [data-parallax] {
     transform: none !important;
     transition: none !important;
   }

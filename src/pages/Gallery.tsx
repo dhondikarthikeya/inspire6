@@ -10,9 +10,6 @@ const GALLERY_IMAGES = [
   "/images/gallery3.jpeg",
 ];
 
-/* =========================
-   scroll animation hook (safe)
-   ========================= */
 function useStaggerReveal() {
   const rootRef = useRef<HTMLDivElement | null>(null);
 
@@ -20,8 +17,10 @@ function useStaggerReveal() {
     const root = rootRef.current;
     if (!root) return;
 
+    // ✅ mark JS-ready immediately so CSS can safely enable animations
+    root.setAttribute("data-js", "1");
+
     const prefersReduced =
-      typeof window !== "undefined" &&
       window.matchMedia &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -33,7 +32,7 @@ function useStaggerReveal() {
       return;
     }
 
-    // Group-based stagger
+    // stagger per group
     const groups = Array.from(root.querySelectorAll<HTMLElement>("[data-anim-group]"));
     const inGroup = new Set<HTMLElement>();
 
@@ -45,7 +44,7 @@ function useStaggerReveal() {
       });
     });
 
-    // Fallback stagger
+    // fallback stagger
     let i = 0;
     els.forEach((el) => {
       if (inGroup.has(el)) return;
@@ -78,7 +77,6 @@ function useParallax() {
     if (!root) return;
 
     const prefersReduced =
-      typeof window !== "undefined" &&
       window.matchMedia &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -99,16 +97,14 @@ function useParallax() {
         const t = (center - vh / 2) / (vh / 2);
         const clamped = Math.max(-1, Math.min(1, t));
 
-        const y = clamped * -10;
-        const r = clamped * 0.6;
-        el.style.setProperty("--py", `${y}px`);
-        el.style.setProperty("--pr", `${r}deg`);
+        el.style.setProperty("--py", `${clamped * -10}px`);
+        el.style.setProperty("--pr", `${clamped * 0.6}deg`);
       }
     };
 
     const onScroll = () => {
       if (raf) return;
-      raf = window.requestAnimationFrame(update);
+      raf = requestAnimationFrame(update);
     };
 
     update();
@@ -116,7 +112,7 @@ function useParallax() {
     window.addEventListener("resize", onScroll);
 
     return () => {
-      if (raf) window.cancelAnimationFrame(raf);
+      if (raf) cancelAnimationFrame(raf);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
@@ -139,7 +135,7 @@ export default function Gallery(): JSX.Element {
   const parallaxRef = useParallax();
   const rootRef = useMergedRefs(revealRef as any, parallaxRef as any);
 
-  // ✅ IMPORTANT: enable animations only on this page
+  // ✅ enable animations only on this page
   useEffect(() => {
     document.documentElement.classList.add("ab-anim");
     return () => document.documentElement.classList.remove("ab-anim");
@@ -147,7 +143,6 @@ export default function Gallery(): JSX.Element {
 
   return (
     <div className="gallery" ref={rootRef}>
-      {/* HERO */}
       <section className="galleryHero" data-anim-group>
         <div className="galleryHero__inner">
           <h1 className="galleryHero__title" data-anim="rise">
@@ -161,7 +156,6 @@ export default function Gallery(): JSX.Element {
         </div>
       </section>
 
-      {/* GRID */}
       <section className="galleryGrid" data-anim-group>
         <div className="galleryGrid__inner">
           {GALLERY_IMAGES.map((src, index) => (

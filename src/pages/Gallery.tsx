@@ -139,15 +139,19 @@ export default function Gallery(): JSX.Element {
   const parallaxRef = useParallax();
   const rootRef = useMergedRefs(revealRef as any, parallaxRef as any);
 
+  // ✅ IMPORTANT: scope animations only when this page is mounted
+  useEffect(() => {
+    document.documentElement.classList.add("ab-anim");
+    return () => document.documentElement.classList.remove("ab-anim");
+  }, []);
+
   return (
     <div className="gallery" ref={rootRef}>
       {/* HERO SECTION */}
       <section className="galleryHero" data-anim-group>
         <div className="galleryHero__inner">
           <h1 className="galleryHero__title" data-anim="rise">
-            Explore Our{" "}
-            <span className="galleryHero__highlight">Campus Life</span> & Training
-            Moments
+            Explore Our <span className="galleryHero__highlight">Campus Life</span> & Training Moments
           </h1>
 
           <p className="galleryHero__subtitle" data-anim="rise">

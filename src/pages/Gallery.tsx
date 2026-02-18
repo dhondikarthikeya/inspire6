@@ -11,7 +11,7 @@ const GALLERY_IMAGES = [
 ];
 
 /* =========================
-   SAME scroll animation hook (About/Courses/Admissions/Placement)
+   scroll animation hook (safe)
    ========================= */
 function useStaggerReveal() {
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -45,7 +45,7 @@ function useStaggerReveal() {
       });
     });
 
-    // Fallback stagger for elements outside groups
+    // Fallback stagger
     let i = 0;
     els.forEach((el) => {
       if (inGroup.has(el)) return;
@@ -139,7 +139,7 @@ export default function Gallery(): JSX.Element {
   const parallaxRef = useParallax();
   const rootRef = useMergedRefs(revealRef as any, parallaxRef as any);
 
-  // ✅ IMPORTANT: scope animations only when this page is mounted
+  // ✅ IMPORTANT: enable animations only on this page
   useEffect(() => {
     document.documentElement.classList.add("ab-anim");
     return () => document.documentElement.classList.remove("ab-anim");
@@ -147,7 +147,7 @@ export default function Gallery(): JSX.Element {
 
   return (
     <div className="gallery" ref={rootRef}>
-      {/* HERO SECTION */}
+      {/* HERO */}
       <section className="galleryHero" data-anim-group>
         <div className="galleryHero__inner">
           <h1 className="galleryHero__title" data-anim="rise">
@@ -155,19 +155,19 @@ export default function Gallery(): JSX.Element {
           </h1>
 
           <p className="galleryHero__subtitle" data-anim="rise">
-            Take a glimpse into practical sessions, hospitality events,
-            internships, and real-world learning experiences at INSPIRE.
+            Take a glimpse into practical sessions, hospitality events, internships,
+            and real-world learning experiences at INSPIRE.
           </p>
         </div>
       </section>
 
-      {/* IMAGE GRID */}
+      {/* GRID */}
       <section className="galleryGrid" data-anim-group>
         <div className="galleryGrid__inner">
           {GALLERY_IMAGES.map((src, index) => (
             <div
               className="galleryCard"
-              key={index}
+              key={src + index}
               data-anim={index % 3 === 0 ? "slideL" : index % 3 === 1 ? "pop" : "slideR"}
               data-parallax
               style={{ ["--stagger" as any]: index }}

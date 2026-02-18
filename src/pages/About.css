@@ -1186,18 +1186,18 @@ html {
 /* ==========================
    DIFFERENT scroll animation
    (stagger + variants + parallax)
-   ✅ Safe: content visible by default
-   ✅ Animations only when .ab-anim is enabled
+   ✅ Safe: visible by default
+   ✅ Animations only when JS adds .ab-anim
    ========================== */
 
-/* Default = visible (no JS = still shows content) */
+/* default = show content */
 [data-anim] {
   opacity: 1;
   transform: none;
   filter: none;
 }
 
-/* Only animate when JS enables it */
+/* animate only when JS enabled */
 .ab-anim [data-anim] {
   --stagger: 0;
   opacity: 0;
@@ -1218,21 +1218,10 @@ html {
 }
 
 /* Variants */
-.ab-anim [data-anim="fade"] {
-  transform: none;
-}
-
-.ab-anim [data-anim="pop"] {
-  transform: translate3d(0, 10px, 0) scale(0.96);
-}
-
-.ab-anim [data-anim="slideL"] {
-  transform: translate3d(-28px, 0, 0) scale(0.99);
-}
-
-.ab-anim [data-anim="slideR"] {
-  transform: translate3d(28px, 0, 0) scale(0.99);
-}
+.ab-anim [data-anim="fade"] { transform: none; }
+.ab-anim [data-anim="pop"] { transform: translate3d(0, 10px, 0) scale(0.96); }
+.ab-anim [data-anim="slideL"] { transform: translate3d(-28px, 0, 0) scale(0.99); }
+.ab-anim [data-anim="slideR"] { transform: translate3d(28px, 0, 0) scale(0.99); }
 
 /* Parallax targets */
 .ab-anim [data-parallax] {

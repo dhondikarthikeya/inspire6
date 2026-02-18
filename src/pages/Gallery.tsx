@@ -10,14 +10,15 @@ const GALLERY_IMAGES = [
   "/images/gallery3.jpeg",
 ];
 
-function useStaggerReveal() {
-  const rootRef = useRef<HTMLDivElement | null>(null);
-
+/* =========================
+   scroll animation hook (BULLETPROOF)
+   ========================= */
+function useStaggerReveal(rootRef: React.RefObject<HTMLElement>) {
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
 
-    // ✅ mark JS-ready immediately so CSS can safely enable animations
+    // ✅ mark JS-ready so CSS can safely enable animations
     root.setAttribute("data-js", "1");
 
     const prefersReduced =
@@ -64,14 +65,10 @@ function useStaggerReveal() {
 
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, []);
-
-  return rootRef;
+  }, [rootRef]);
 }
 
-function useParallax() {
-  const rootRef = useRef<HTMLDivElement | null>(null);
-
+function useParallax(rootRef: React.RefObject<HTMLElement>) {
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
@@ -116,33 +113,24 @@ function useParallax() {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-  }, []);
-
-  return rootRef;
-}
-
-function useMergedRefs<T extends HTMLElement>(...refs: React.RefObject<T>[]) {
-  const merged = useRef<T | null>(null);
-  useEffect(() => {
-    refs.forEach((r) => ((r as any).current = merged.current));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  return merged;
+  }, [rootRef]);
 }
 
 export default function Gallery(): JSX.Element {
-  const revealRef = useStaggerReveal();
-  const parallaxRef = useParallax();
-  const rootRef = useMergedRefs(revealRef as any, parallaxRef as any);
+  const rootRef = useRef<HTMLDivElement | null>(null);
 
-  // ✅ enable animations only on this page
+  // ✅ enable animations only while this page is mounted
   useEffect(() => {
     document.documentElement.classList.add("ab-anim");
     return () => document.documentElement.classList.remove("ab-anim");
   }, []);
 
+  useStaggerReveal(rootRef);
+  useParallax(rootRef);
+
   return (
     <div className="gallery" ref={rootRef}>
+      {/* HERO */}
       <section className="galleryHero" data-anim-group>
         <div className="galleryHero__inner">
           <h1 className="galleryHero__title" data-anim="rise">
@@ -150,12 +138,12 @@ export default function Gallery(): JSX.Element {
           </h1>
 
           <p className="galleryHero__subtitle" data-anim="rise">
-            Take a glimpse into practical sessions, hospitality events, internships,
-            and real-world learning experiences at INSPIRE.
+            Take a glimpse into practical sessions, hospitality events, internships, and real-world learning experiences at INSPIRE.
           </p>
         </div>
       </section>
 
+      {/* GRID */}
       <section className="galleryGrid" data-anim-group>
         <div className="galleryGrid__inner">
           {GALLERY_IMAGES.map((src, index) => (

@@ -142,15 +142,6 @@ function useParallax() {
   return rootRef;
 }
 
-function useMergedRefs<T extends HTMLElement>(...refs: React.RefObject<T>[]) {
-  const merged = useRef<T | null>(null);
-  useEffect(() => {
-    refs.forEach((r) => ((r as any).current = merged.current));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  return merged;
-}
-
 /**
  * Helper: scroll by ONE card (not full page), loop back to start when reaching end.
  */
@@ -491,7 +482,18 @@ export default function Placement() {
 
   const revealRef = useStaggerReveal();
   const parallaxRef = useParallax();
-  const rootRef = useMergedRefs(revealRef as any, parallaxRef as any);
+
+  // ✅ FIX: callback ref so both hooks get the real DOM node
+  const setRootRef = (node: HTMLDivElement | null) => {
+    (revealRef as any).current = node;
+    (parallaxRef as any).current = node;
+  };
+
+  // ✅ enable animations only when JS runs
+  useEffect(() => {
+    document.documentElement.classList.add("ab-anim");
+    return () => document.documentElement.classList.remove("ab-anim");
+  }, []);
 
   const abroadPlacements2025 = useMemo<AbroadPlacement[]>(
     () => [
@@ -581,7 +583,7 @@ export default function Placement() {
   );
 
   return (
-    <div className="placementPage" ref={rootRef}>
+    <div className="placementPage" ref={setRootRef}>
       {/* HERO */}
       <section className="placementPage__hero" aria-label="Placement hero" data-anim-group>
         <div className="placementPage__container placementPage__heroInner">
@@ -624,11 +626,7 @@ export default function Placement() {
           </div>
 
           <div className="placementPage__heroRight">
-            <div
-              className={`placementPage__heroCard ${heroImgOk ? "" : "isFallback"}`}
-              data-anim="slideR"
-              data-parallax
-            >
+            <div className={`placementPage__heroCard ${heroImgOk ? "" : "isFallback"}`} data-anim="slideR" data-parallax>
               {heroImgOk && (
                 <img
                   src="/images/heroimg.png"

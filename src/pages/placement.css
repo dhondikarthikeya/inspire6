@@ -1140,10 +1140,20 @@
   -ms-overflow-style: none;
 }
 /* ==========================
-   Scroll animation (same as About/Courses/Admissions)
+   Scroll animation (safe)
+   ✅ visible by default
+   ✅ animate only when .ab-anim is present
    ========================== */
 
+/* default = show content */
 [data-anim] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* animate only when JS enabled */
+.ab-anim [data-anim] {
   --stagger: 0;
   opacity: 0;
   transform: translate3d(0, 18px, 0) scale(0.99);
@@ -1156,28 +1166,28 @@
   will-change: transform, opacity, filter;
 }
 
-[data-anim].is-in {
+.ab-anim [data-anim].is-in {
   opacity: 1;
   transform: translate3d(0, 0, 0) scale(1);
   filter: blur(0);
 }
 
-[data-anim="fade"] { transform: none; }
+.ab-anim [data-anim="fade"] { transform: none; }
 
-[data-anim="pop"] {
+.ab-anim [data-anim="pop"] {
   transform: translate3d(0, 10px, 0) scale(0.96);
 }
 
-[data-anim="slideL"] {
+.ab-anim [data-anim="slideL"] {
   transform: translate3d(-28px, 0, 0) scale(0.99);
 }
 
-[data-anim="slideR"] {
+.ab-anim [data-anim="slideR"] {
   transform: translate3d(28px, 0, 0) scale(0.99);
 }
 
 /* Parallax targets */
-[data-parallax] {
+.ab-anim [data-parallax] {
   --py: 0px;
   --pr: 0deg;
   transform: translate3d(0, var(--py), 0) rotate(var(--pr));
@@ -1186,13 +1196,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-anim] {
+  .ab-anim [data-anim] {
     opacity: 1 !important;
     transform: none !important;
     filter: none !important;
     transition: none !important;
   }
-  [data-parallax] {
+  .ab-anim [data-parallax] {
     transform: none !important;
     transition: none !important;
   }

@@ -139,7 +139,7 @@ const TAGS: CourseTag[] = ["All", "Diploma", "Advanced", "PG", "Short-Term"];
    ========================= */
 
 function useStaggerReveal() {
-  const rootRef = useRef<HTMLDivElement | null>(null);
+  const rootRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -158,7 +158,6 @@ function useStaggerReveal() {
       return;
     }
 
-    // stagger per group for nice cascading
     const groups = Array.from(root.querySelectorAll<HTMLElement>("[data-anim-group]"));
     const inGroup = new Set<HTMLElement>();
 
@@ -170,7 +169,6 @@ function useStaggerReveal() {
       });
     });
 
-    // fallback stagger for anything not in group
     let i = 0;
     els.forEach((el) => {
       if (inGroup.has(el)) return;
@@ -196,7 +194,7 @@ function useStaggerReveal() {
 }
 
 function useParallax() {
-  const rootRef = useRef<HTMLDivElement | null>(null);
+  const rootRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -221,11 +219,11 @@ function useParallax() {
       for (const el of els) {
         const rect = el.getBoundingClientRect();
         const center = rect.top + rect.height / 2;
-        const t = (center - vh / 2) / (vh / 2); // -1..1
+        const t = (center - vh / 2) / (vh / 2);
         const clamped = Math.max(-1, Math.min(1, t));
 
-        const y = clamped * -10; // px
-        const r = clamped * 0.6; // deg
+        const y = clamped * -10;
+        const r = clamped * 0.6;
         el.style.setProperty("--py", `${y}px`);
         el.style.setProperty("--pr", `${r}deg`);
       }
@@ -250,21 +248,23 @@ function useParallax() {
   return rootRef;
 }
 
-function useMergedRefs<T extends HTMLElement>(...refs: React.RefObject<T>[]) {
-  const merged = useRef<T | null>(null);
-  useEffect(() => {
-    refs.forEach((r) => ((r as any).current = merged.current));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  return merged;
-}
-
 /* ========================= */
 
 export default function Courses() {
   const revealRef = useStaggerReveal();
   const parallaxRef = useParallax();
-  const rootRef = useMergedRefs(revealRef as any, parallaxRef as any);
+
+  // ✅ FIX: callback ref (prevents null refs on Vercel)
+  const setRootRef = (node: HTMLElement | null) => {
+    (revealRef as any).current = node;
+    (parallaxRef as any).current = node;
+  };
+
+  // ✅ same as About: enable animations only when JS runs
+  useEffect(() => {
+    document.documentElement.classList.add("ab-anim");
+    return () => document.documentElement.classList.remove("ab-anim");
+  }, []);
 
   const [activeTag, setActiveTag] = useState<CourseTag>("All");
   const [openId, setOpenId] = useState<string | null>(null);
@@ -279,7 +279,7 @@ export default function Courses() {
   };
 
   return (
-    <div className="coursesPage" ref={rootRef}>
+    <div className="coursesPage" ref={setRootRef as any}>
       {/* HERO */}
       <section className="coursesHeroX" data-anim-group>
         <div className="heroXInner">
@@ -313,7 +313,12 @@ export default function Courses() {
                 { top: "Career Support", bottom: "Guidance & preparation" },
                 { top: "Hands-on", bottom: "Learning approach" },
               ].map((b, idx) => (
-                <div key={b.top} className="heroXBadge" data-anim="pop" style={{ ["--stagger" as any]: idx }}>
+                <div
+                  key={b.top}
+                  className="heroXBadge"
+                  data-anim="pop"
+                  style={{ ["--stagger" as any]: idx }}
+                >
                   <div className="heroXBadgeTop">{b.top}</div>
                   <div className="heroXBadgeBottom">{b.bottom}</div>
                 </div>
@@ -344,7 +349,12 @@ export default function Courses() {
           Explore our industry-focused programs designed for real careers.
         </p>
 
-        <div className="filtersRow" role="tablist" aria-label="Course categories" data-anim="pop">
+        <div
+          className="filtersRow"
+          role="tablist"
+          aria-label="Course categories"
+          data-anim="pop"
+        >
           {TAGS.map((tag) => {
             const selected = tag === activeTag;
             return (
@@ -432,7 +442,10 @@ export default function Courses() {
                     </div>
                   </div>
 
-                  <div id={`details-${course.id}`} className={`rowDetails ${isOpen ? "open" : ""}`}>
+                  <div
+                    id={`details-${course.id}`}
+                    className={`rowDetails ${isOpen ? "open" : ""}`}
+                  >
                     {course.subjects?.length ? (
                       <>
                         <h3 className="detailsTitle">Subjects</h3>
@@ -445,7 +458,9 @@ export default function Courses() {
                         </div>
                       </>
                     ) : (
-                      <p className="detailsNote">Subject details will be shared during enquiry.</p>
+                      <p className="detailsNote">
+                        Subject details will be shared during enquiry.
+                      </p>
                     )}
                   </div>
                 </div>
@@ -460,7 +475,9 @@ export default function Courses() {
         <div className="enquireInner" data-anim="rise">
           <div>
             <h2 className="enquireTitle">Admissions Open</h2>
-            <p className="enquireSub">Send your details and we’ll guide you to the right program.</p>
+            <p className="enquireSub">
+              Send your details and we’ll guide you to the right program.
+            </p>
           </div>
 
           <div className="enquireActions" data-anim="pop">

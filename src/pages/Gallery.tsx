@@ -5,9 +5,9 @@ const GALLERY_IMAGES = [
   "/images/slider1.jpeg",
   "/images/slider2.jpeg",
   "/images/slider3.jpeg",
-  "/images/wow6.png",
-  "/images/wow11.png",
-  "/images/wow9.png",
+  "/images/gallery1.jpeg",
+  "/images/gallery2.jpeg",
+  "/images/gallery3.jpeg",
 ];
 
 /* =========================

@@ -1,3 +1,4 @@
+// Admissions.tsx
 import React, { useEffect, useRef } from "react";
 import "./Admissions.css";
 
@@ -100,7 +101,6 @@ function useStaggerReveal() {
       return;
     }
 
-    // group-based stagger
     const groups = Array.from(root.querySelectorAll<HTMLElement>("[data-anim-group]"));
     const inGroup = new Set<HTMLElement>();
 
@@ -112,7 +112,6 @@ function useStaggerReveal() {
       });
     });
 
-    // fallback stagger
     let i = 0;
     els.forEach((el) => {
       if (inGroup.has(el)) return;
@@ -163,11 +162,11 @@ function useParallax() {
       for (const el of els) {
         const rect = el.getBoundingClientRect();
         const center = rect.top + rect.height / 2;
-        const t = (center - vh / 2) / (vh / 2); // -1..1
+        const t = (center - vh / 2) / (vh / 2);
         const clamped = Math.max(-1, Math.min(1, t));
 
-        const y = clamped * -10; // px
-        const r = clamped * 0.6; // deg
+        const y = clamped * -10;
+        const r = clamped * 0.6;
         el.style.setProperty("--py", `${y}px`);
         el.style.setProperty("--pr", `${r}deg`);
       }
@@ -192,24 +191,26 @@ function useParallax() {
   return rootRef;
 }
 
-function useMergedRefs<T extends HTMLElement>(...refs: React.RefObject<T>[]) {
-  const merged = useRef<T | null>(null);
-  useEffect(() => {
-    refs.forEach((r) => ((r as any).current = merged.current));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  return merged;
-}
-
 /* ========================= */
 
 export default function Admissions(): JSX.Element {
   const revealRef = useStaggerReveal();
   const parallaxRef = useParallax();
-  const rootRef = useMergedRefs(revealRef as any, parallaxRef as any);
+
+  // ✅ FIX: callback ref so both hooks get correct DOM node
+  const setRootRef = (node: HTMLDivElement | null) => {
+    (revealRef as any).current = node;
+    (parallaxRef as any).current = node;
+  };
+
+  // ✅ Enable animation only after JS loads (prevents reload weirdness)
+  useEffect(() => {
+    document.documentElement.classList.add("ab-anim");
+    return () => document.documentElement.classList.remove("ab-anim");
+  }, []);
 
   return (
-    <div className="admissions" ref={rootRef}>
+    <div className="admissions" ref={setRootRef}>
       <div className="admissions__container">
         {/* ✅ HERO */}
         <section className="coursesHeroX" data-anim-group>
@@ -354,21 +355,9 @@ export default function Admissions(): JSX.Element {
 
           <div className="admissions__grid admissions__grid--3">
             {[
-              {
-                title: "1) Apply",
-                pill: "Step 01",
-                text: "Submit the application form along with the required documents.",
-              },
-              {
-                title: "2) Review",
-                pill: "Step 02",
-                text: "Our team verifies eligibility and may schedule an interaction if needed.",
-              },
-              {
-                title: "3) Confirmation",
-                pill: "Step 03",
-                text: "You’ll receive confirmation and the next steps for enrollment.",
-              },
+              { title: "1) Apply", pill: "Step 01", text: "Submit the application form along with the required documents." },
+              { title: "2) Review", pill: "Step 02", text: "Our team verifies eligibility and may schedule an interaction if needed." },
+              { title: "3) Confirmation", pill: "Step 03", text: "You’ll receive confirmation and the next steps for enrollment." },
             ].map((p, idx) => (
               <article
                 key={p.title}
@@ -458,10 +447,8 @@ export default function Admissions(): JSX.Element {
               <div data-anim="slideL">
                 <div className="admissions__strong">Admissions Office</div>
                 <div className="admissions__muted">
-                  Email: 
-info@inspirecollegehm.com <br />
-                  Phone: +91-8374382391
- <br />
+                  Email: info@inspirecollegehm.com <br />
+                  Phone: +91-8374382391 <br />
                   Hours: Mon–Fri, 9:30 AM – 5:30 PM
                 </div>
               </div>

@@ -8,8 +8,8 @@ type FormType = {
 };
 
 const SITE = {
-  phone: "+918374382391",
-  whatsappNumber: "918374382391", // ✅ digits only
+  phone: "+918188855564",
+  whatsappNumber: "918188855564", // ✅ digits only
   email: "info@inspirecollegehm.com",
 };
 

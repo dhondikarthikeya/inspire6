@@ -1207,3 +1207,30 @@
     transition: none !important;
   }
 }
+/* ✅ Responsive only: stats row becomes horizontal scroll */
+@media (max-width: 980px) {
+  .placementPage__statsRow {
+    justify-content: flex-start;  /* don't center on mobile */
+    flex-wrap: nowrap;           /* single row */
+    overflow-x: auto;            /* enable scroll */
+    overflow-y: hidden;
+    padding: 10px 6px;
+    gap: 12px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .placementPage__stat {
+    flex: 0 0 220px;            /* each card width on mobile */
+    scroll-snap-align: start;
+  }
+
+  /* optional: hide scrollbar */
+  .placementPage__statsRow::-webkit-scrollbar {
+    display: none;
+  }
+  .placementPage__statsRow {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+}

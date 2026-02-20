@@ -84,13 +84,12 @@ export default function Faculty() {
 
   return (
     <div className="facultyPage">
-      {/* HERO (kept) */}
+      {/* HERO */}
       <section className="facultyPage__hero" aria-label="Faculty hero">
         <div className="facultyPage__container facultyPage__heroInner">
           <div className="facultyPage__heroLeft">
             <h1 className="facultyPage__heroTitle">
-              Learn from{" "}
-              <span className="facultyPage__hl">expert faculty</span>,{" "}
+              Learn from <span className="facultyPage__hl">expert faculty</span>,{" "}
               <span className="facultyPage__hl">industry mentors</span>, and{" "}
               <span className="facultyPage__hl">practical guidance</span>.
             </h1>
@@ -151,7 +150,6 @@ export default function Faculty() {
           <header className="facultyPage__head">
             <h2 className="facultyPage__title">Meet Our Faculty</h2>
 
-            {/* ✅ Added content below heading */}
             <div className="facultyPage__content">
               <p>
                 We have an extremely well qualified international experienced faculty at ICHM with excellent academic
@@ -173,8 +171,6 @@ export default function Faculty() {
               </p>
             </div>
           </header>
-
-          {/* ✅ Removed tabs bar completely */}
 
           <div className="facultyPage__grid">
             {faculty.map((m) => (
@@ -218,6 +214,122 @@ export default function Faculty() {
         </div>
       </section>
 
+      {/* ================================
+          OUR LABS (Reference-style)
+      ================================ */}
+      <section className="facultyLabs" id="labs" aria-label="Our Labs">
+        <div className="facultyLabs__frame">
+          <div className="facultyLabs__panel">
+            <div className="facultyLabs__top">
+              <div className="facultyLabs__left">
+                <h2 className="facultyLabs__h2">Explore Our Industry-Standard Labs</h2>
+
+                <p className="facultyLabs__sub">
+                  Hands-on training facilities designed for practical hospitality learning.
+                </p>
+
+                <div className="facultyLabs__btnRow">
+                  <a className="facultyLabs__btn facultyLabs__btnPrimary" href="#labs-grid">
+                    View Labs
+                  </a>
+                  <a className="facultyLabs__btn facultyLabs__btnGhost" href="#enquire">
+                    Enquire Now
+                  </a>
+                </div>
+              </div>
+
+              <div className="facultyLabs__right">
+                <div className="facultyLabs__heroImgCard">
+                  <img src="/labs/hero-lab.jpeg" alt="INSPIRE Labs" loading="lazy" />
+                  <div className="facultyLabs__heroImgLabel">INSPIRE • Labs</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Stats bar */}
+            <div className="facultyLabs__statsBar" aria-label="Lab highlights">
+              {[
+                { ico: "🏛️", t: "6+ Labs", s: "Fully equipped learning spaces" },
+                { ico: "⚙️", t: "Industry-Standard", s: "Modern tools for real-world tasks" },
+                { ico: "🧑‍🍳", t: "Hands-on Training", s: "Practical experience in controlled setting" },
+                { ico: "✅", t: "Certified Safety", s: "Strict adherence to hygiene standards" },
+                { ico: "🧾", t: "Practices", s: "Protocols used across campuses" },
+              ].map((x) => (
+                <div key={x.t} className="facultyLabs__stat">
+                  <span className="facultyLabs__ico">{x.ico}</span>
+                  <div>
+                    <div className="facultyLabs__statT">{x.t}</div>
+                    <div className="facultyLabs__statS">{x.s}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Cards grid */}
+            <div id="labs-grid" className="facultyLabs__grid">
+              {[
+                {
+                  title: "Food Production Lab",
+                  desc: "Professional training kitchen equipped for culinary skills development.",
+                  img: "/images/labs/lab1.jpg",
+                  chips: ["Industry Tools", "Practice Stations"],
+                },
+                {
+                  title: "Bakery & Patisserie Lab",
+                  desc: "State-of-the-art bakery setup for learning baking and pastry making.",
+                  img: "/images/labs/lab2.jpg",
+                  chips: ["Industry Tools", "Practice Stations"],
+                },
+                {
+                  title: "Front Office Simulation Lab",
+                  desc: "Mock front office for guest service and hotel management training.",
+                  img: "/images/labs/lab3.jpg",
+                  chips: ["Industry Tools", "Safety Certified"],
+                },
+                {
+                  title: "Housekeeping Practice Lab",
+                  desc: "Hands-on housekeeping room for cleaning and room readiness training.",
+                  img: "/images/labs/lab4.jpg",
+                  chips: ["Safety Certified", "Practice Stations"],
+                },
+                {
+                  title: "Food & Beverage Service Lab",
+                  desc: "Training bar and dining area for service and mixology practice.",
+                  img: "/images/labs/lab5.jpg",
+                  chips: ["Industry Tools", "Service Setup"],
+                },
+              ].map((lab) => (
+                <article key={lab.title} className="facultyLabs__card">
+                  <div className="facultyLabs__cardImg">
+                    <img src={lab.img} alt={lab.title} loading="lazy" />
+                  </div>
+
+                  <div className="facultyLabs__cardBody">
+                    <h3 className="facultyLabs__cardTitle">{lab.title}</h3>
+                    <p className="facultyLabs__cardDesc">{lab.desc}</p>
+
+                    <div className="facultyLabs__chipRow" aria-label="Lab features">
+                      {lab.chips.map((c) => (
+                        <span key={c} className="facultyLabs__chip">
+                          {c}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* <div className="facultyLabs__iconRow" aria-label="Lab actions">
+                      <span className="facultyLabs__miniIcon">🔗</span>
+                      <span className="facultyLabs__miniIcon">📷</span>
+                      <span className="facultyLabs__miniIcon">🗓️</span>
+                      <span className="facultyLabs__miniIcon">ℹ️</span>
+                    </div> */}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section id="enquire" className="facultyPage__cta" aria-label="Enquire CTA">
         <div className="facultyPage__container">
@@ -230,7 +342,7 @@ export default function Faculty() {
             </div>
 
             <div className="facultyPage__ctaBtns">
-              <a className="facultyPage__btnPrimary" href="/apply">
+              <a className="facultyPage__btnPrimary" href="/contact#form">
                 Apply Now
               </a>
               <a className="facultyPage__btnGhost" href="/brochure">

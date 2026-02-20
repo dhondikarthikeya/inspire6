@@ -8,6 +8,11 @@ const GALLERY_IMAGES = [
   "/images/gallery1.jpeg",
   "/images/gallery2.jpeg",
   "/images/gallery3.jpeg",
+  "/images/gallery4.jpeg",
+  "/images/gallery5.jpeg",
+  "/images/gallery6.jpeg",
+  "/images/gallery7.jpeg",
+  "/images/gallery8.jpeg",
 ];
 
 /* =========================

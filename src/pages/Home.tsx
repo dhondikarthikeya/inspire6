@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { SITE } from "../config/siteConfig";
-import ScrollStack, { ScrollStackItem } from "../components/ScrollStack";
 import "./home.css";
 
 type EnquiryForm = {
@@ -23,10 +22,7 @@ function digitsOnly(v: string) {
   return v.replace(/\D/g, "");
 }
 
-/**
- * ✅ IMPORTANT:
- * Use wa.me with digits-only number to avoid 404.
- */
+/** ✅ IMPORTANT: Use wa.me with digits-only number to avoid 404. */
 function buildWhatsAppUrl(whatsappNumberDigitsOnly: string, message: string) {
   const base = `https://wa.me/${whatsappNumberDigitsOnly}`;
   const text = encodeURIComponent(message);
@@ -45,133 +41,48 @@ function validate(form: EnquiryForm): FieldErrors {
   return e;
 }
 
-/** Existing reveal-once observer (kept) */
-function useRevealObserver() {
-  const rootRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
-
-    const prefersReduced =
-      typeof window !== "undefined" &&
-      window.matchMedia &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    if (prefersReduced) {
-      root.querySelectorAll<HTMLElement>("[data-reveal]").forEach((el) => el.classList.add("is-visible"));
-      return;
-    }
-
-    const els = Array.from(root.querySelectorAll<HTMLElement>("[data-reveal]"));
-    if (!els.length) return;
-
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            (entry.target as HTMLElement).classList.add("is-visible");
-            io.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.12 }
-    );
-
-    els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, []);
-
-  return rootRef;
-}
-
-/** NEW: scroll-progress animation for elements with [data-scroll] */
-function useScrollProgressAnimation() {
-  const rootRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
-
-    const prefersReduced =
-      typeof window !== "undefined" &&
-      window.matchMedia &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    const els = Array.from(root.querySelectorAll<HTMLElement>("[data-scroll]"));
-    if (!els.length) return;
-
-    if (prefersReduced) {
-      els.forEach((el) => el.style.setProperty("--p", "1"));
-      return;
-    }
-
-    let raf = 0;
-
-    const update = () => {
-      raf = 0;
-      const vh = window.innerHeight || 1;
-
-      for (const el of els) {
-        const rect = el.getBoundingClientRect();
-
-        // start when element is near bottom, finish when it reaches upper viewport
-        const start = vh * 0.85;
-        const end = vh * 0.25;
-
-        const pRaw = (start - rect.top) / (start - end);
-        const p = Math.max(0, Math.min(1, pRaw));
-
-        el.style.setProperty("--p", String(p));
-      }
-    };
-
-    const onScroll = () => {
-      if (raf) return;
-      raf = window.requestAnimationFrame(update);
-    };
-
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-
-    return () => {
-      if (raf) window.cancelAnimationFrame(raf);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, []);
-
-  return rootRef;
-}
-
-/** Combine both behaviors into one ref (so you can keep data-reveal + add data-scroll) */
+/**
+ * ✅ Reveal animation (NO blur)
+ * - Uses [data-anim] system
+ * - Works even if you still have data-reveal in JSX (auto converts)
+ * - Adds "ab-anim" class on root (CSS depends on it)
+ */
 function useCombinedAnimations() {
   const rootRef = useRef<HTMLDivElement | null>(null);
 
-  // Reveal once
+  // ✅ Reveal once (IntersectionObserver) using data-anim system
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
+
+    // enable animation mode (your CSS expects this)
+    root.classList.add("ab-anim");
 
     const prefersReduced =
       typeof window !== "undefined" &&
       window.matchMedia &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    // support BOTH: [data-anim] and [data-reveal]
+    const els = Array.from(root.querySelectorAll<HTMLElement>("[data-anim],[data-reveal]"));
+    if (!els.length) return;
+
+    // convert old data-reveal elements into data-anim automatically + stagger
+    els.forEach((el, i) => {
+      if (!el.hasAttribute("data-anim")) el.setAttribute("data-anim", "pop");
+      el.style.setProperty("--stagger", String(i));
+    });
+
     if (prefersReduced) {
-      root.querySelectorAll<HTMLElement>("[data-reveal]").forEach((el) => el.classList.add("is-visible"));
+      els.forEach((el) => el.classList.add("is-in"));
       return;
     }
-
-    const els = Array.from(root.querySelectorAll<HTMLElement>("[data-reveal]"));
-    if (!els.length) return;
 
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            (entry.target as HTMLElement).classList.add("is-visible");
+            (entry.target as HTMLElement).classList.add("is-in");
             io.unobserve(entry.target);
           }
         });
@@ -183,7 +94,7 @@ function useCombinedAnimations() {
     return () => io.disconnect();
   }, []);
 
-  // Scroll progress
+  // Scroll progress (kept, in case you want to use --p for future)
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
@@ -259,8 +170,43 @@ type CourseCard = {
 
 type PlacementLogo = { src: string; alt: string };
 
+/** ✅ Web3Forms config (PUT YOUR KEY HERE) */
+const WEB3FORMS_ACCESS_KEY = "PASTE_YOUR_WEB3FORMS_ACCESS_KEY_HERE";
+
+/** ✅ helper to send enquiry to Web3Forms (email to you) */
+async function submitToWeb3Forms(form: EnquiryForm) {
+  const fd = new FormData();
+
+  fd.append("access_key", WEB3FORMS_ACCESS_KEY);
+
+  // Subject shown in your email inbox
+  fd.append("subject", `New Student Enquiry: ${form.name}`);
+
+  // The fields you want in email
+  fd.append("name", form.name.trim());
+  fd.append("phone", digitsOnly(form.phone));
+  fd.append("course", form.course);
+
+  // Extra info (optional)
+  fd.append("from_site", SITE.name);
+  fd.append("location", SITE.location);
+
+  const res = await fetch("https://api.web3forms.com/submit", {
+    method: "POST",
+    body: fd,
+  });
+
+  const data = await res.json().catch(() => null);
+
+  if (!res.ok || !data?.success) {
+    const msg = data?.message || "Failed to submit form";
+    throw new Error(msg);
+  }
+
+  return data;
+}
+
 export default function Home() {
-  // ✅ Use combined animations so you keep data-reveal AND add scrolling animation via data-scroll
   const rootRef = useCombinedAnimations();
 
   const slides: Slide[] = useMemo(
@@ -312,17 +258,11 @@ export default function Home() {
   const [errors, setErrors] = useState<FieldErrors>({});
   const [faqOpen, setFaqOpen] = useState<number | null>(0);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<string>("");
+
   const coursesSectionId = "coursesPreview";
 
-  /**
-   * ✅ UPDATED WhatsApp (same style as Contact.tsx)
-   * - Uses digits-only WhatsApp number to avoid 404
-   * - Message format: "Hi Inspire ICHM–Armoor, Name/Phone/Course..."
-   *
-   * REQUIREMENT:
-   * In siteConfig.ts, ensure:
-   * SITE.whatsappNumber = "918188855564" (digits only)
-   */
   const quickWaHref = useMemo(() => {
     const waDigits = digitsOnly((SITE as any).whatsappNumber ?? (SITE as any).whatsapp ?? "");
 
@@ -337,19 +277,36 @@ Please share eligibility, fees & admission steps.`;
     return buildWhatsAppUrl(waDigits, message);
   }, [form.name, form.phone, form.course]);
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitStatus("");
+
     const v = validate(form);
     setErrors(v);
     if (Object.keys(v).length) return;
 
-    window.open(quickWaHref, "_blank", "noopener,noreferrer");
-  };
+    if (!WEB3FORMS_ACCESS_KEY || WEB3FORMS_ACCESS_KEY.includes("PASTE_YOUR")) {
+      setSubmitStatus("❌ Web3Forms access key missing. Please add your access key in code.");
+      return;
+    }
 
-  const scrollTo = (id: string) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.scrollIntoView({ behavior: "smooth", block: "start" });
+    try {
+      setIsSubmitting(true);
+      await submitToWeb3Forms(form);
+
+      setSubmitStatus("✅ Submitted successfully! We will contact you soon.");
+
+      setForm({
+        name: "",
+        phone: "",
+        course: "Diploma In Hotel Management",
+      });
+      setErrors({});
+    } catch (err: any) {
+      setSubmitStatus(`❌ ${err?.message || "Something went wrong. Please try again."}`);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const telHref = `tel:${SITE.phone}`;
@@ -614,7 +571,7 @@ Please share eligibility, fees & admission steps.`;
             <aside className="hero__card" data-reveal data-scroll aria-label="Quick enquiry form">
               <div className="cardHeader">
                 <h2 className="cardHeader__title">Quick Enquiry</h2>
-                <p className="cardHeader__sub">Get admission details on WhatsApp.</p>
+                <p className="cardHeader__sub">Get admission details on Email.</p>
               </div>
 
               <form onSubmit={onSubmit} className="form" noValidate>
@@ -670,9 +627,15 @@ Please share eligibility, fees & admission steps.`;
                   </select>
                 </div>
 
-                <button type="submit" className="btn btn--gold btn--full">
-                  Send on WhatsApp
+                <button type="submit" className="btn btn--gold btn--full" disabled={isSubmitting}>
+                  {isSubmitting ? "Submitting..." : "Send Enquiry"}
                 </button>
+
+                {!!submitStatus && (
+                  <div className="field__hint" style={{ marginTop: 10 }}>
+                    {submitStatus}
+                  </div>
+                )}
 
                 <div className="form__meta">
                   <a className="metaLink" href={telHref}>
@@ -752,7 +715,7 @@ Please share eligibility, fees & admission steps.`;
             <div className="coursesHead">
               <div className="coursesHead__center">
                 <h2 className="courseTitle">
-                  <span className="handUnderline">Courses</span> offered
+                  <span className="handUnderline">Academic</span>Courses
                 </h2>
 
                 <span className="coursesHead__underline"></span>
@@ -795,7 +758,7 @@ Please share eligibility, fees & admission steps.`;
           </div>
         </section>
 
-        {/* ===================== PLACEMENTS SECTION ===================== */}
+        {/* PLACEMENTS SECTION */}
         <section className="placementsFull" aria-label="Placements and career support" data-reveal data-scroll>
           <div className="placementsBox">
             <h2 className="placementsTitle placementsTitle--center">
@@ -834,9 +797,8 @@ Please share eligibility, fees & admission steps.`;
             </div>
           </div>
         </section>
-        {/* ===================== END PLACEMENTS SECTION ===================== */}
 
-        {/* ===================== PROUD / ABROAD SECTION (SEPARATE) ===================== */}
+        {/* PROUD / ABROAD SECTION */}
         <section className="placementsFull placementsProudSection" aria-label="What made INSPIRE proud" data-reveal data-scroll>
           <div className="placementsBox">
             <h2 className="placementsAbroad__title placementsTitle--center">
@@ -873,7 +835,7 @@ Please share eligibility, fees & admission steps.`;
           </div>
         </section>
 
-        {/* ================= FAQ SECTION ================= */}
+        {/* FAQ SECTION */}
         <section className="section faqSection" aria-label="Frequently asked questions" data-reveal data-scroll>
           <div className="section__head faqHead">
             <h2 className="section__title">
@@ -974,7 +936,7 @@ Please share eligibility, fees & admission steps.`;
             <aside className="admissionEnquiry__card" aria-label="Admission enquiry form" data-scroll>
               <div className="admissionCardHead">
                 <h3 className="admissionCardHead__title">Get Admission Details</h3>
-                <p className="admissionCardHead__sub">Fill the form and send your enquiry on WhatsApp.</p>
+                <p className="admissionCardHead__sub">Fill the form and send your enquiry.</p>
               </div>
 
               <form onSubmit={onSubmit} className="form form--tight" noValidate>
@@ -1030,9 +992,15 @@ Please share eligibility, fees & admission steps.`;
                   </select>
                 </div>
 
-                <button type="submit" className="btn btn--gold btn--full">
-                  Send Enquiry
+                <button type="submit" className="btn btn--gold btn--full" disabled={isSubmitting}>
+                  {isSubmitting ? "Submitting..." : "Send Enquiry"}
                 </button>
+
+                {!!submitStatus && (
+                  <div className="field__hint" style={{ marginTop: 10 }}>
+                    {submitStatus}
+                  </div>
+                )}
 
                 <div className="admissionCardMeta">We’ll reply with eligibility, fees &amp; admission steps.</div>
               </form>

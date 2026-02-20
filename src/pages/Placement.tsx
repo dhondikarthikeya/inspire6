@@ -51,11 +51,15 @@ function useStaggerReveal() {
     }
 
     // group-based stagger
-    const groups = Array.from(root.querySelectorAll<HTMLElement>("[data-anim-group]"));
+    const groups = Array.from(
+      root.querySelectorAll<HTMLElement>("[data-anim-group]")
+    );
     const inGroup = new Set<HTMLElement>();
 
     groups.forEach((group) => {
-      const groupEls = Array.from(group.querySelectorAll<HTMLElement>("[data-anim]"));
+      const groupEls = Array.from(
+        group.querySelectorAll<HTMLElement>("[data-anim]")
+      );
       groupEls.forEach((el, idx) => {
         inGroup.add(el);
         el.style.setProperty("--stagger", String(idx));
@@ -247,7 +251,12 @@ function StudentSlider({
   useAutoSlideLoop(trackRef, !autoSlide || paused, intervalMs);
 
   return (
-    <section id={id} className="placementPage__sliderSection" aria-label={`${id} slider`} data-anim-group>
+    <section
+      id={id}
+      className="placementPage__sliderSection"
+      aria-label={`${id} slider`}
+      data-anim-group
+    >
       <div className="placementPage__sectionHead" data-anim="rise">
         <h2 className="placementPage__h2">{title}</h2>
         <p className="placementPage__p">{subtitle}</p>
@@ -275,13 +284,13 @@ function StudentSlider({
         </button>
 
         <div className="placementPage__sliderTrack" ref={trackRef}>
-          {items.map((s, idx) => (
+          {items.map((s) => (
             <article
               key={s.name}
               data-slide="true"
               className="placementPage__studentCard placementPage__studentCard--slide"
-              data-anim="fade"
-              style={{ ["--stagger" as any]: idx }}
+              // ✅ REMOVED: data-anim="fade"
+              // ✅ REMOVED: stagger style (not needed if not animating)
             >
               <div className="placementPage__studentImg">
                 <img src={s.img} alt={s.name} loading="lazy" />
@@ -396,7 +405,12 @@ function TestimonialSlider({
   useAutoSlideLoop(trackRef, !autoSlide || paused, intervalMs);
 
   return (
-    <section id={id} className="placementPage__sliderSection" aria-label={`${id} testimonials`} data-anim-group>
+    <section
+      id={id}
+      className="placementPage__sliderSection"
+      aria-label={`${id} testimonials`}
+      data-anim-group
+    >
       <div className="placementPage__sectionHead" data-anim="rise">
         <h2 className="placementPage__h2">{title}</h2>
         <p className="placementPage__p">{subtitle}</p>
@@ -617,7 +631,12 @@ export default function Placement() {
                 { top: "Industry Network", bottom: "Hospitality partners" },
                 { top: "Career Readiness", bottom: "Soft skills & grooming" },
               ].map((c, idx) => (
-                <div key={c.top} className="placementPage__miniCard" data-anim="pop" style={{ ["--stagger" as any]: idx }}>
+                <div
+                  key={c.top}
+                  className="placementPage__miniCard"
+                  data-anim="pop"
+                  style={{ ["--stagger" as any]: idx }}
+                >
                   <div className="placementPage__miniTop">{c.top}</div>
                   <div className="placementPage__miniBottom">{c.bottom}</div>
                 </div>
@@ -626,7 +645,11 @@ export default function Placement() {
           </div>
 
           <div className="placementPage__heroRight">
-            <div className={`placementPage__heroCard ${heroImgOk ? "" : "isFallback"}`} data-anim="slideR" data-parallax>
+            <div
+              className={`placementPage__heroCard ${heroImgOk ? "" : "isFallback"}`}
+              data-anim="slideR"
+              data-parallax
+            >
               {heroImgOk && (
                 <img
                   src="/images/heroimg.png"
@@ -708,8 +731,18 @@ export default function Placement() {
           <div className="placementPage__logosPanel" aria-label="Placement partners" data-anim="rise">
             <div className="placementPage__logoGrid">
               {placementLogos.map((logo, idx) => (
-                <div key={logo.alt} className="placementPage__logoCard" data-anim="pop" style={{ ["--stagger" as any]: idx }}>
-                  <img className="placementPage__logoImg" src={logo.src} alt={logo.alt} loading="lazy" />
+                <div
+                  key={logo.alt}
+                  className="placementPage__logoCard"
+                  data-anim="pop"
+                  style={{ ["--stagger" as any]: idx }}
+                >
+                  <img
+                    className="placementPage__logoImg"
+                    src={logo.src}
+                    alt={logo.alt}
+                    loading="lazy"
+                  />
                 </div>
               ))}
             </div>
@@ -745,8 +778,12 @@ export default function Placement() {
             </div>
 
             <div className="placementPage__ctaBtns" data-anim="pop">
-              <a className="placementPage__btnPrimary" href="/apply">Apply Now</a>
-              <a className="placementPage__btnGhost" href="/brochure">Download Brochure</a>
+              <a className="placementPage__btnPrimary" href="/contact#form">
+                Apply Now
+              </a>
+              <a className="placementPage__btnGhost" href="/brochure">
+                Download Brochure
+              </a>
             </div>
           </div>
         </div>

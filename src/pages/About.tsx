@@ -378,7 +378,14 @@ export default function About() {
 
   const leaders = [
     {
-      role: "Managing Director",
+      role: "Founder",
+      name: "Ms. Gangarajula Pravalika",
+      imgSrc: "/images/Gangarajula.png",
+      text:
+        "Welcome to an Institute where Hoteliering is not just a profession but a lifestyle; where we transform students into showmen and distinguished personalities with unparalleled intelligence and wisdom—individuals who never give up, who embrace a positive attitude and a strong “can do” approach.Here, passion meets precision, discipline shapes character, and excellence becomes a lifelong commitment to global leadership.",
+    },
+    {
+      role: "Managing Director and Chairman",
       name: "Mr. Kampadandi Vinod Kumar",
       imgSrc: "/images/vinod.png",
       text:
@@ -392,12 +399,13 @@ export default function About() {
         "It is with profound pleasure that I welcome you to INSPIRE INSTITUTE OF HOTEL MANAGEMENT AND CAREER. The vision behind starting this institute is to give best education in hospitality industry to deserving students with affordable fees. The institute is committed to quality at every level. The parents who send their wards to this institute, the students who study here for a career and the industry that offers placement to passed out students – everyone can be sure of quality.",
     },
     {
-      role: "Chairman",
-      name: "Ms. Gangarajula Pravalika",
-      imgSrc: "/images/Gangarajula.png",
+      role: "placement director",
+      name: "Mr. Gunnala Ranjith Kumar",
+      imgSrc: "/images/ranjith.png",
       text:
-        "Welcome to an Institute where Hoteliering is not just a profession but a lifestyle; where we transform students to become a showman, a personality with unparalleled intelligence and wisdom, who never gives up this positive attitude, a strong “can do” approach.",
+        "His commitment goes beyond placements—he mentors students to develop professional confidence, industry readiness, and strong interpersonal skills. Through continuous industry collaboration, training initiatives, and personalized guidance, Mr. Ranjith Kumar ensures that every student steps into the professional world fully prepared, empowered, and positioned for success.",
     },
+    
   ];
 
   return (

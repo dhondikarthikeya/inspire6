@@ -481,7 +481,7 @@ export default function Courses() {
           </div>
 
           <div className="enquireActions" data-anim="pop">
-            <a className="btnRow btnPrimary" href="/apply">
+            <a className="btnRow btnPrimary" href="/contact#form">
               Apply Now <span className="arrow">→</span>
             </a>
             <a className="btnRow btnGhostLight" href="/brochure">

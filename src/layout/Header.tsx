@@ -300,7 +300,7 @@ export default function Header() {
             <div className="drawerFooter">
               <Link
                 className="ctaPrimary"
-                to="/admissions"
+                to="/contact#form"
                 onClick={() => {
                   restoreScrollOnUnlockRef.current = false;
                   setOpen(false);

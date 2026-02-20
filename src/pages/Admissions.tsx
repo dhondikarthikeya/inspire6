@@ -230,7 +230,7 @@ export default function Admissions(): JSX.Element {
               </p>
 
               <div className="heroXBtns" data-anim="pop">
-                <a className="heroXBtnPrimary" href="#apply">
+                <a className="heroXBtnPrimary" href="/contact#form">
                   Apply Now
                 </a>
                 <a className="heroXBtnGhost" href="#enquire">
@@ -331,10 +331,10 @@ export default function Admissions(): JSX.Element {
                   </div>
 
                   <div className="admissions__courseActions">
-                    <a className="admissions__courseBtn admissions__courseBtn--primary" href="#enquire">
+                    <a className="admissions__courseBtn admissions__courseBtn--primary" href="/contact#form">
                       Apply Now
                     </a>
-                    <a className="admissions__courseBtn admissions__courseBtn--ghost" href="#enquire">
+                    <a className="admissions__courseBtn admissions__courseBtn--ghost" href="/contact">
                       Enquire
                     </a>
                   </div>

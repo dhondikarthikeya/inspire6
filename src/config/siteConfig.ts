@@ -1,7 +1,12 @@
 export const SITE = {
   name: "Inspire College of Hotel Management",
   location: "Armoor, Nizamabad",
-  phone: "91+ 8188855564",
-  whatsapp: "91+8188855564", // without +
+
+  // For calling (can keep + here)
+  phone: "+918188855564",
+
+  // For WhatsApp (digits only, NO +, NO spaces)
+  whatsapp: "918188855564",
+
   email: "info@inspirecollegehm.com",
 };

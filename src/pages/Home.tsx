@@ -23,8 +23,12 @@ function digitsOnly(v: string) {
   return v.replace(/\D/g, "");
 }
 
-function buildWhatsAppUrl(whatsappNumber: string, message: string) {
-  const base = `https://wa.me/${whatsappNumber}`;
+/**
+ * ✅ IMPORTANT:
+ * Use wa.me with digits-only number to avoid 404.
+ */
+function buildWhatsAppUrl(whatsappNumberDigitsOnly: string, message: string) {
+  const base = `https://wa.me/${whatsappNumberDigitsOnly}`;
   const text = encodeURIComponent(message);
   return `${base}?text=${text}`;
 }
@@ -311,11 +315,18 @@ export default function Home() {
   const coursesSectionId = "coursesPreview";
 
   /**
-   * ✅ UPDATED: WhatsApp quick enquiry (same style as your Contact page)
-   * This one link is used everywhere (slider button, quick enquiry, FAQ card, etc.)
+   * ✅ UPDATED WhatsApp (same style as Contact.tsx)
+   * - Uses digits-only WhatsApp number to avoid 404
+   * - Message format: "Hi Inspire ICHM–Armoor, Name/Phone/Course..."
+   *
+   * REQUIREMENT:
+   * In siteConfig.ts, ensure:
+   * SITE.whatsappNumber = "918188855564" (digits only)
    */
   const quickWaHref = useMemo(() => {
-    const message = `Hi ${SITE.name},
+    const waDigits = digitsOnly((SITE as any).whatsappNumber ?? (SITE as any).whatsapp ?? "");
+
+    const message = `Hi Inspire ICHM–Armoor,
 
 Name: ${form.name.trim() || "-"}
 Phone: ${digitsOnly(form.phone) || "-"}
@@ -323,7 +334,7 @@ Course: ${form.course || "-"}
 
 Please share eligibility, fees & admission steps.`;
 
-    return buildWhatsAppUrl(SITE.whatsapp, message);
+    return buildWhatsAppUrl(waDigits, message);
   }, [form.name, form.phone, form.course]);
 
   const onSubmit = (e: React.FormEvent) => {
@@ -332,7 +343,6 @@ Please share eligibility, fees & admission steps.`;
     setErrors(v);
     if (Object.keys(v).length) return;
 
-    // ✅ open the same WhatsApp quick enquiry
     window.open(quickWaHref, "_blank", "noopener,noreferrer");
   };
 
@@ -359,30 +369,10 @@ Please share eligibility, fees & admission steps.`;
 
   const highlightCards = useMemo(
     () => [
-      {
-        title: "Practical Training",
-        text: "Hands-on labs and structured practice across core hotel departments.",
-        img: "/images/slider1.jpeg",
-        alt: "Practical training lab",
-      },
-      {
-        title: "Industry Exposure",
-        text: "Professional grooming, communication and service standards aligned to industry needs.",
-        img: "/images/slider2.jpeg",
-        alt: "Industry exposure and professional grooming",
-      },
-      {
-        title: "Career Guidance",
-        text: "Internship support, interview readiness and next-step planning for students.",
-        img: "/images/hello.jpeg",
-        alt: "Career guidance and internship support",
-      },
-      {
-        title: "Student Support",
-        text: "Guidance for students and parents with a friendly, student-first environment.",
-        img: "/images/wow9.png",
-        alt: "Student support and counselling",
-      },
+      { title: "Practical Training", text: "Hands-on labs and structured practice across core hotel departments.", img: "/images/slider1.jpeg", alt: "Practical training lab" },
+      { title: "Industry Exposure", text: "Professional grooming, communication and service standards aligned to industry needs.", img: "/images/slider2.jpeg", alt: "Industry exposure and professional grooming" },
+      { title: "Career Guidance", text: "Internship support, interview readiness and next-step planning for students.", img: "/images/hello.jpeg", alt: "Career guidance and internship support" },
+      { title: "Student Support", text: "Guidance for students and parents with a friendly, student-first environment.", img: "/images/wow9.png", alt: "Student support and counselling" },
     ],
     []
   );

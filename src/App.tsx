@@ -7,7 +7,7 @@ import Courses from "./pages/Courses";
 import Admissions from "./pages/Admissions";
 import Placement from "./pages/Placement";
 import Gallery from "./pages/Gallery";
-import Notices from "./pages/Notices";
+import Faculty from "./pages/Faculty";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
@@ -21,7 +21,7 @@ const router = createBrowserRouter([
       { path: "/admissions", element: <Admissions /> },
       { path: "/placement", element: <Placement /> },
       { path: "/gallery", element: <Gallery /> },
-      { path: "/notices", element: <Notices /> },
+      { path: "/faculty", element: <Faculty /> },
       { path: "/contact", element: <Contact /> },
       { path: "*", element: <NotFound /> },
     ],

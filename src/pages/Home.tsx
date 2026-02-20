@@ -299,8 +299,6 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slides.length]);
 
-  // ✅ FIX: your initial state "BHM" was not in the union type, so it breaks TS.
-  // Pick any valid course from your union.
   const [form, setForm] = useState<EnquiryForm>({
     name: "",
     phone: "",
@@ -312,16 +310,21 @@ export default function Home() {
 
   const coursesSectionId = "coursesPreview";
 
-  const waMessage = useMemo(() => {
-    const phone = digitsOnly(form.phone);
-    return [
-      `Hello ${SITE.name}, I want admission details.`,
-      `Name: ${form.name.trim() || "-"}`,
-      `Phone: ${phone || "-"}`,
-      `Course: ${form.course}`,
-      `Location: ${SITE.location}`,
-    ].join("\n");
-  }, [form]);
+  /**
+   * ✅ UPDATED: WhatsApp quick enquiry (same style as your Contact page)
+   * This one link is used everywhere (slider button, quick enquiry, FAQ card, etc.)
+   */
+  const quickWaHref = useMemo(() => {
+    const message = `Hi ${SITE.name},
+
+Name: ${form.name.trim() || "-"}
+Phone: ${digitsOnly(form.phone) || "-"}
+Course: ${form.course || "-"}
+
+Please share eligibility, fees & admission steps.`;
+
+    return buildWhatsAppUrl(SITE.whatsapp, message);
+  }, [form.name, form.phone, form.course]);
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -329,8 +332,8 @@ export default function Home() {
     setErrors(v);
     if (Object.keys(v).length) return;
 
-    const url = buildWhatsAppUrl(SITE.whatsapp, waMessage);
-    window.open(url, "_blank", "noopener,noreferrer");
+    // ✅ open the same WhatsApp quick enquiry
+    window.open(quickWaHref, "_blank", "noopener,noreferrer");
   };
 
   const scrollTo = (id: string) => {
@@ -340,7 +343,6 @@ export default function Home() {
   };
 
   const telHref = `tel:${SITE.phone}`;
-  const quickWaHref = useMemo(() => buildWhatsAppUrl(SITE.whatsapp, `Hello ${SITE.name}, I want admission details.`), []);
 
   const faqs = useMemo(
     () => [
@@ -357,10 +359,30 @@ export default function Home() {
 
   const highlightCards = useMemo(
     () => [
-      { title: "Practical Training", text: "Hands-on labs and structured practice across core hotel departments.", img: "/images/slider1.jpeg", alt: "Practical training lab" },
-      { title: "Industry Exposure", text: "Professional grooming, communication and service standards aligned to industry needs.", img: "/images/slider2.jpeg", alt: "Industry exposure and professional grooming" },
-      { title: "Career Guidance", text: "Internship support, interview readiness and next-step planning for students.", img: "/images/hello.jpeg", alt: "Career guidance and internship support" },
-      { title: "Student Support", text: "Guidance for students and parents with a friendly, student-first environment.", img: "/images/wow9.png", alt: "Student support and counselling" },
+      {
+        title: "Practical Training",
+        text: "Hands-on labs and structured practice across core hotel departments.",
+        img: "/images/slider1.jpeg",
+        alt: "Practical training lab",
+      },
+      {
+        title: "Industry Exposure",
+        text: "Professional grooming, communication and service standards aligned to industry needs.",
+        img: "/images/slider2.jpeg",
+        alt: "Industry exposure and professional grooming",
+      },
+      {
+        title: "Career Guidance",
+        text: "Internship support, interview readiness and next-step planning for students.",
+        img: "/images/hello.jpeg",
+        alt: "Career guidance and internship support",
+      },
+      {
+        title: "Student Support",
+        text: "Guidance for students and parents with a friendly, student-first environment.",
+        img: "/images/wow9.png",
+        alt: "Student support and counselling",
+      },
     ],
     []
   );
@@ -663,7 +685,7 @@ export default function Home() {
                 </button>
 
                 <div className="form__meta">
-                  <a className="metaLink" href={`tel:${SITE.phone}`}>
+                  <a className="metaLink" href={telHref}>
                     Call: {SITE.phone}
                   </a>
                   <a className="metaLink" href={quickWaHref} target="_blank" rel="noreferrer">
@@ -751,12 +773,7 @@ export default function Home() {
 
             <div className="coursesGrid">
               {courses.map((c, index) => (
-                <article
-                  key={c.title}
-                  className="courseCardUnified"
-                  data-scroll
-                  style={{ ["--cardBg" as any]: c.theme.leftBg }}
-                >
+                <article key={c.title} className="courseCardUnified" data-scroll style={{ ["--cardBg" as any]: c.theme.leftBg }}>
                   <img src={`/images/${index === 0 ? "wow" : `wow${index + 1}`}.png`} alt={c.title} className="courseCardUnified__img" />
 
                   <div className="courseCardUnified__overlay" />

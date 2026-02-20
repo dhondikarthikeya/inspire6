@@ -5,11 +5,12 @@ import { SITE } from "../config/siteConfig";
 const MENU = [
   { to: "/", label: "Home", end: true },
   { to: "/about", label: "About" },
+  { to: "/faculty", label: "Faculty" },
   { to: "/courses", label: "Courses" },
   { to: "/admissions", label: "Admissions" },
   { to: "/placement", label: "Placement" },
   { to: "/gallery", label: "Gallery" },
-  // { to: "/notices", label: "Notices" },
+  
   { to: "/contact", label: "Contact" },
 ];
 

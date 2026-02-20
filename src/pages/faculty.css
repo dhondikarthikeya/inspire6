@@ -1,0 +1,291 @@
+/* faculty.css - fully scoped to .facultyPage only */
+
+.facultyPage {
+  font-family: var(--font-main);
+  color: #111;
+  background: #fff;
+}
+
+.facultyPage__container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* optional section spacing */
+.facultyPage__sectionPad {
+  padding: 56px 16px;
+}
+
+/* -------------------------
+   HERO (same style as placement)
+------------------------- */
+.facultyPage__hero {
+  padding: 30px 0 18px;
+  background:
+    radial-gradient(900px 420px at 22% 18%, rgba(47, 111, 237, 0.20), transparent 60%),
+    radial-gradient(900px 420px at 85% 22%, rgba(124, 77, 255, 0.14), transparent 60%),
+    linear-gradient(180deg, #f4fbff 0%, #ffffff 55%, #ffffff 100%);
+}
+
+.facultyPage__heroInner {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 28px;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.facultyPage__heroLeft {
+  padding: 20px 0px;
+}
+
+.facultyPage__heroTitle {
+  margin: 0;
+  font-size: clamp(34px, 4vw, 50px);
+  font-weight: 550;
+  letter-spacing: -0.8px;
+  line-height: 1.15;
+}
+
+.facultyPage__hl {
+  color: #2f6fed;
+  text-decoration: underline;
+  text-decoration-thickness: 4px;
+  text-underline-offset: 7px;
+  text-decoration-color: rgba(47, 111, 237, 0.28);
+}
+
+.facultyPage__heroSub {
+  margin: 16px 0 0;
+  max-width: 72ch;
+  color: rgba(17, 17, 17, 0.68);
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+.facultyPage__heroBtns {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+}
+
+.facultyPage__btnPrimary,
+.facultyPage__btnGhost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-weight: 650;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.facultyPage__btnPrimary {
+  background: #0f172a;
+  color: #fff;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+}
+
+.facultyPage__btnPrimary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 22px 46px rgba(15, 23, 42, 0.22);
+}
+
+.facultyPage__btnGhost {
+  background: #ffffff;
+  color: #111;
+  border-color: rgba(17, 17, 17, 0.14);
+  box-shadow: 0 12px 30px rgba(17, 17, 17, 0.06);
+}
+
+.facultyPage__btnGhost:hover {
+  transform: translateY(-1px);
+  border-color: rgba(47, 111, 237, 0.28);
+}
+
+.facultyPage__miniGrid {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.facultyPage__miniCard {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 12px 26px rgba(17, 17, 17, 0.06);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.facultyPage__miniCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px rgba(17, 17, 17, 0.10);
+}
+
+.facultyPage__miniTop {
+  font-weight: 650;
+  font-size: 14px;
+}
+
+.facultyPage__miniBottom {
+  margin-top: 4px;
+  font-size: 13px;
+  color: rgba(17, 17, 17, 0.62);
+}
+
+.facultyPage__heroRight {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.facultyPage__heroCard {
+  position: relative;
+  width: min(720px, 100%);
+  border-radius: 26px;
+  overflow: hidden;
+  box-shadow: 0 22px 55px rgba(17, 17, 17, 0.18);
+  border: 1px solid rgba(17, 17, 17, 0.10);
+  background: #fff;
+}
+
+.facultyPage__heroCard.isFallback {
+  background:
+    radial-gradient(420px 260px at 20% 20%, rgba(47,111,237,0.35), transparent 60%),
+    radial-gradient(420px 260px at 80% 30%, rgba(124,77,255,0.25), transparent 60%),
+    linear-gradient(180deg, #0b2a6f 0%, #2f6fed 55%, #f6fbff 100%);
+  min-height: 380px;
+}
+
+.facultyPage__heroCard img {
+  width: 100%;
+  height: 380px;
+  object-fit: cover;
+  display: block;
+}
+
+.facultyPage__heroOverlay {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 16px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(17, 17, 17, 0.42);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #fff;
+}
+
+.facultyPage__heroOverlayTitle {
+  font-weight: 700;
+}
+
+.facultyPage__heroOverlaySub {
+  margin-top: 4px;
+  opacity: 0.9;
+  font-size: 13px;
+}
+
+/* -------------------------
+   SIMPLE TYPO (for placeholder sections)
+------------------------- */
+.facultyPage__h2 {
+  margin: 0;
+  font-size: clamp(26px, 3vw, 38px);
+  font-weight: 650;
+  letter-spacing: -0.5px;
+}
+
+.facultyPage__p {
+  margin-top: 10px;
+  color: rgba(17, 17, 17, 0.68);
+  line-height: 1.7;
+  max-width: 75ch;
+}
+
+/* -------------------------
+   CTA (optional placeholder styles)
+------------------------- */
+.facultyPage__cta {
+  padding: 44px 0 80px;
+  background: #fff;
+}
+
+.facultyPage__ctaInner {
+  border-radius: 18px;
+  padding: 18px;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  box-shadow: 0 12px 26px rgba(17, 17, 17, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.facultyPage__ctaTitle {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 650;
+}
+
+.facultyPage__ctaSub {
+  margin: 6px 0 0;
+  color: rgba(17, 17, 17, 0.68);
+  line-height: 1.6;
+}
+
+.facultyPage__ctaBtns {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* -------------------------
+   RESPONSIVE
+------------------------- */
+@media (max-width: 980px) {
+  .facultyPage__heroInner {
+    grid-template-columns: 1fr;
+  }
+
+  .facultyPage__heroRight {
+    justify-content: center;
+  }
+
+  .facultyPage__miniGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .facultyPage__heroCard img,
+  .facultyPage__heroCard.isFallback {
+    height: 320px;
+    min-height: 320px;
+  }
+}
+
+@media (max-width: 600px) {
+  .facultyPage__heroCard img,
+  .facultyPage__heroCard.isFallback {
+    height: 240px;
+    min-height: 240px;
+  }
+
+  .facultyPage__btnPrimary,
+  .facultyPage__btnGhost {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .facultyPage__btnPrimary,
+  .facultyPage__btnGhost,
+  .facultyPage__miniCard {
+    transition: none !important;
+  }
+}

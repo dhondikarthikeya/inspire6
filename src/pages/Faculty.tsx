@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from "react";
+// faculty.tsx
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import "./faculty.css";
 
 type FacultyMember = {
@@ -29,8 +30,143 @@ function MailIcon() {
   );
 }
 
+/* =========================
+   Scroll reveal + stagger
+   ========================= */
+function useStaggerReveal() {
+  const rootRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+
+    const prefersReduced =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const els = Array.from(root.querySelectorAll<HTMLElement>("[data-anim]"));
+    if (!els.length) return;
+
+    // Reduced motion: show everything
+    if (prefersReduced) {
+      els.forEach((el) => el.classList.add("is-in"));
+      return;
+    }
+
+    // Stagger per group
+    const groups = Array.from(root.querySelectorAll<HTMLElement>("[data-anim-group]"));
+    const inGroup = new Set<HTMLElement>();
+
+    groups.forEach((group) => {
+      const groupEls = Array.from(group.querySelectorAll<HTMLElement>("[data-anim]"));
+      groupEls.forEach((el, idx) => {
+        inGroup.add(el);
+        el.style.setProperty("--stagger", String(idx));
+      });
+    });
+
+    // Fallback stagger outside groups
+    let i = 0;
+    els.forEach((el) => {
+      if (inGroup.has(el)) return;
+      el.style.setProperty("--stagger", String(i++));
+    });
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          (entry.target as HTMLElement).classList.add("is-in");
+          io.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -10% 0px" }
+    );
+
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
+  return rootRef;
+}
+
+/* =========================
+   Optional parallax
+   ========================= */
+function useParallax() {
+  const rootRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+
+    const prefersReduced =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (prefersReduced) return;
+
+    const els = Array.from(root.querySelectorAll<HTMLElement>("[data-parallax]"));
+    if (!els.length) return;
+
+    let raf = 0;
+
+    const update = () => {
+      raf = 0;
+      const vh = window.innerHeight || 1;
+
+      for (const el of els) {
+        const rect = el.getBoundingClientRect();
+        const center = rect.top + rect.height / 2;
+        const t = (center - vh / 2) / (vh / 2);
+        const clamped = Math.max(-1, Math.min(1, t));
+
+        const y = clamped * -10; // px
+        const r = clamped * 0.6; // deg
+        el.style.setProperty("--py", `${y}px`);
+        el.style.setProperty("--pr", `${r}deg`);
+      }
+    };
+
+    const onScroll = () => {
+      if (raf) return;
+      raf = window.requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+
+    return () => {
+      if (raf) window.cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
+  return rootRef;
+}
+
+/* Merge multiple refs into one */
+function useMergedRefs<T extends HTMLElement>(...refs: React.RefObject<T>[]) {
+  const merged = useRef<T | null>(null);
+
+  useEffect(() => {
+    refs.forEach((r) => ((r as any).current = merged.current));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return merged;
+}
+
 export default function Faculty() {
   const [heroImgOk, setHeroImgOk] = useState(true);
+
+  const revealRef = useStaggerReveal();
+  const parallaxRef = useParallax();
+  const rootRef = useMergedRefs(revealRef as any, parallaxRef as any);
 
   const faculty = useMemo<FacultyMember[]>(
     () => [
@@ -82,24 +218,60 @@ export default function Faculty() {
     []
   );
 
+  const labs = useMemo(
+    () => [
+      {
+        title: "Food Production Lab",
+        desc: "Professional training kitchen equipped for culinary skills development.",
+        img: "/images/labs/lab1.jpg",
+        chips: ["Industry Tools", "Practice Stations"],
+      },
+      {
+        title: "Bakery & Patisserie Lab",
+        desc: "State-of-the-art bakery setup for learning baking and pastry making.",
+        img: "/images/labs/lab2.jpg",
+        chips: ["Industry Tools", "Practice Stations"],
+      },
+      {
+        title: "Front Office Simulation Lab",
+        desc: "Mock front office for guest service and hotel management training.",
+        img: "/images/labs/lab3.jpg",
+        chips: ["Industry Tools", "Safety Certified"],
+      },
+      {
+        title: "Housekeeping Practice Lab",
+        desc: "Hands-on housekeeping room for cleaning and room readiness training.",
+        img: "/images/labs/lab4.jpg",
+        chips: ["Safety Certified", "Practice Stations"],
+      },
+      {
+        title: "Food & Beverage Service Lab",
+        desc: "Training bar and dining area for service and mixology practice.",
+        img: "/images/labs/lab5.jpg",
+        chips: ["Industry Tools", "Service Setup"],
+      },
+    ],
+    []
+  );
+
   return (
-    <div className="facultyPage">
+    <div className="facultyPage" ref={rootRef}>
       {/* HERO */}
-      <section className="facultyPage__hero" aria-label="Faculty hero">
+      <section className="facultyPage__hero" aria-label="Faculty hero" data-anim-group>
         <div className="facultyPage__container facultyPage__heroInner">
           <div className="facultyPage__heroLeft">
-            <h1 className="facultyPage__heroTitle">
+            <h1 className="facultyPage__heroTitle" data-anim="rise">
               Learn from <span className="facultyPage__hl">expert faculty</span>,{" "}
               <span className="facultyPage__hl">industry mentors</span>, and{" "}
               <span className="facultyPage__hl">practical guidance</span>.
             </h1>
 
-            <p className="facultyPage__heroSub">
+            <p className="facultyPage__heroSub" data-anim="rise">
               INSPIRE Institute of Hotel Management faculty supports students with hands-on training,
               mentorship, and career-focused learning.
             </p>
 
-            <div className="facultyPage__heroBtns">
+            <div className="facultyPage__heroBtns" data-anim="pop">
               <a className="facultyPage__btnPrimary" href="#our-faculty">
                 Meet Our Faculty
               </a>
@@ -108,14 +280,14 @@ export default function Faculty() {
               </a>
             </div>
 
-            <div className="facultyPage__miniGrid" aria-label="Faculty highlights">
+            <div className="facultyPage__miniGrid" aria-label="Faculty highlights" data-anim="rise" data-anim-group>
               {[
                 { top: "Expert Mentors", bottom: "Industry-backed guidance" },
                 { top: "Practical Learning", bottom: "Hands-on training" },
                 { top: "Student Support", bottom: "1:1 mentoring" },
                 { top: "Career Focus", bottom: "Job-ready skills" },
               ].map((c) => (
-                <div key={c.top} className="facultyPage__miniCard">
+                <div key={c.top} className="facultyPage__miniCard" data-anim="pop">
                   <div className="facultyPage__miniTop">{c.top}</div>
                   <div className="facultyPage__miniBottom">{c.bottom}</div>
                 </div>
@@ -123,8 +295,8 @@ export default function Faculty() {
             </div>
           </div>
 
-          <div className="facultyPage__heroRight">
-            <div className={`facultyPage__heroCard ${heroImgOk ? "" : "isFallback"}`}>
+          <div className="facultyPage__heroRight" data-anim="slideR">
+            <div className={`facultyPage__heroCard ${heroImgOk ? "" : "isFallback"}`} data-parallax>
               {heroImgOk && (
                 <img
                   src="/images/heroimg.png"
@@ -145,12 +317,12 @@ export default function Faculty() {
       </section>
 
       {/* OUR FACULTY */}
-      <section id="our-faculty" className="facultyPage__wrap" aria-label="Our faculty">
+      <section id="our-faculty" className="facultyPage__wrap" aria-label="Our faculty" data-anim-group>
         <div className="facultyPage__panel">
-          <header className="facultyPage__head">
+          <header className="facultyPage__head" data-anim="rise">
             <h2 className="facultyPage__title">Meet Our Faculty</h2>
 
-            <div className="facultyPage__content">
+            <div className="facultyPage__content" data-anim="rise">
               <p>
                 We have an extremely well qualified international experienced faculty at ICHM with excellent academic
                 credentials and Extensive experience in the Hospitality. Our entire faculty excels in bringing out the
@@ -172,9 +344,9 @@ export default function Faculty() {
             </div>
           </header>
 
-          <div className="facultyPage__grid">
+          <div className="facultyPage__grid" data-anim-group>
             {faculty.map((m) => (
-              <article key={m.id} className="facultyPage__card">
+              <article key={m.id} className="facultyPage__card" data-anim="pop">
                 <div className="facultyPage__photo">
                   <img src={m.img} alt={m.name} loading="lazy" />
                   <div className="facultyPage__years">{m.years}</div>
@@ -198,12 +370,7 @@ export default function Faculty() {
                     >
                       <LinkedInIcon />
                     </a>
-                    <a
-                      className="facultyPage__iconBtn"
-                      href={m.email || "#"}
-                      aria-label="Email"
-                      title="Email"
-                    >
+                    <a className="facultyPage__iconBtn" href={m.email || "#"} aria-label="Email" title="Email">
                       <MailIcon />
                     </a>
                   </div>
@@ -214,21 +381,21 @@ export default function Faculty() {
         </div>
       </section>
 
-      {/* ================================
-          OUR LABS (Reference-style)
-      ================================ */}
-      <section className="facultyLabs" id="labs" aria-label="Our Labs">
+      {/* OUR LABS */}
+      <section className="facultyLabs" id="labs" aria-label="Our Labs" data-anim-group>
         <div className="facultyLabs__frame">
           <div className="facultyLabs__panel">
-            <div className="facultyLabs__top">
+            <div className="facultyLabs__top" data-anim-group>
               <div className="facultyLabs__left">
-                <h2 className="facultyLabs__h2">Explore Our Industry-Standard Labs</h2>
+                <h2 className="facultyLabs__h2" data-anim="rise">
+                  Explore Our Industry-Standard Labs
+                </h2>
 
-                <p className="facultyLabs__sub">
+                <p className="facultyLabs__sub" data-anim="rise">
                   Hands-on training facilities designed for practical hospitality learning.
                 </p>
 
-                <div className="facultyLabs__btnRow">
+                <div className="facultyLabs__btnRow" data-anim="pop">
                   <a className="facultyLabs__btn facultyLabs__btnPrimary" href="#labs-grid">
                     View Labs
                   </a>
@@ -238,8 +405,8 @@ export default function Faculty() {
                 </div>
               </div>
 
-              <div className="facultyLabs__right">
-                <div className="facultyLabs__heroImgCard">
+              <div className="facultyLabs__right" data-anim="slideR">
+                <div className="facultyLabs__heroImgCard" data-parallax>
                   <img src="/labs/hero-lab.jpeg" alt="INSPIRE Labs" loading="lazy" />
                   <div className="facultyLabs__heroImgLabel">INSPIRE • Labs</div>
                 </div>
@@ -247,7 +414,7 @@ export default function Faculty() {
             </div>
 
             {/* Stats bar */}
-            <div className="facultyLabs__statsBar" aria-label="Lab highlights">
+            <div className="facultyLabs__statsBar" aria-label="Lab highlights" data-anim="rise" data-anim-group>
               {[
                 { ico: "🏛️", t: "6+ Labs", s: "Fully equipped learning spaces" },
                 { ico: "⚙️", t: "Industry-Standard", s: "Modern tools for real-world tasks" },
@@ -255,7 +422,7 @@ export default function Faculty() {
                 { ico: "✅", t: "Certified Safety", s: "Strict adherence to hygiene standards" },
                 { ico: "🧾", t: "Practices", s: "Protocols used across campuses" },
               ].map((x) => (
-                <div key={x.t} className="facultyLabs__stat">
+                <div key={x.t} className="facultyLabs__stat" data-anim="pop">
                   <span className="facultyLabs__ico">{x.ico}</span>
                   <div>
                     <div className="facultyLabs__statT">{x.t}</div>
@@ -266,40 +433,9 @@ export default function Faculty() {
             </div>
 
             {/* Cards grid */}
-            <div id="labs-grid" className="facultyLabs__grid">
-              {[
-                {
-                  title: "Food Production Lab",
-                  desc: "Professional training kitchen equipped for culinary skills development.",
-                  img: "/images/labs/lab1.jpg",
-                  chips: ["Industry Tools", "Practice Stations"],
-                },
-                {
-                  title: "Bakery & Patisserie Lab",
-                  desc: "State-of-the-art bakery setup for learning baking and pastry making.",
-                  img: "/images/labs/lab2.jpg",
-                  chips: ["Industry Tools", "Practice Stations"],
-                },
-                {
-                  title: "Front Office Simulation Lab",
-                  desc: "Mock front office for guest service and hotel management training.",
-                  img: "/images/labs/lab3.jpg",
-                  chips: ["Industry Tools", "Safety Certified"],
-                },
-                {
-                  title: "Housekeeping Practice Lab",
-                  desc: "Hands-on housekeeping room for cleaning and room readiness training.",
-                  img: "/images/labs/lab4.jpg",
-                  chips: ["Safety Certified", "Practice Stations"],
-                },
-                {
-                  title: "Food & Beverage Service Lab",
-                  desc: "Training bar and dining area for service and mixology practice.",
-                  img: "/images/labs/lab5.jpg",
-                  chips: ["Industry Tools", "Service Setup"],
-                },
-              ].map((lab) => (
-                <article key={lab.title} className="facultyLabs__card">
+            <div id="labs-grid" className="facultyLabs__grid" data-anim-group>
+              {labs.map((lab) => (
+                <article key={lab.title} className="facultyLabs__card" data-anim="pop">
                   <div className="facultyLabs__cardImg">
                     <img src={lab.img} alt={lab.title} loading="lazy" />
                   </div>
@@ -315,13 +451,6 @@ export default function Faculty() {
                         </span>
                       ))}
                     </div>
-
-                    {/* <div className="facultyLabs__iconRow" aria-label="Lab actions">
-                      <span className="facultyLabs__miniIcon">🔗</span>
-                      <span className="facultyLabs__miniIcon">📷</span>
-                      <span className="facultyLabs__miniIcon">🗓️</span>
-                      <span className="facultyLabs__miniIcon">ℹ️</span>
-                    </div> */}
                   </div>
                 </article>
               ))}
@@ -331,9 +460,9 @@ export default function Faculty() {
       </section>
 
       {/* CTA */}
-      <section id="enquire" className="facultyPage__cta" aria-label="Enquire CTA">
+      <section id="enquire" className="facultyPage__cta" aria-label="Enquire CTA" data-anim-group>
         <div className="facultyPage__container">
-          <div className="facultyPage__ctaInner">
+          <div className="facultyPage__ctaInner" data-anim="rise">
             <div>
               <h2 className="facultyPage__ctaTitle">Want to know more?</h2>
               <p className="facultyPage__ctaSub">
@@ -341,7 +470,7 @@ export default function Faculty() {
               </p>
             </div>
 
-            <div className="facultyPage__ctaBtns">
+            <div className="facultyPage__ctaBtns" data-anim="pop">
               <a className="facultyPage__btnPrimary" href="/contact#form">
                 Apply Now
               </a>

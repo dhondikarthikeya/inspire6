@@ -3441,61 +3441,35 @@ inset 0 1px 0 rgba(255,255,255,.8);
   font-weight: 550;
 }
 /* =========================
-   SCROLL REVEAL (NO BLUR)
-   Use with: data-reveal OR data-anim (both supported)
-   JS adds: .ab-anim on root + .is-in on visible elements
+   Scroll animation (no libs)
    ========================= */
 
-/* If you still have old data-reveal styles, neutralize them */
-[data-reveal] {
-  opacity: 1 !important;
-  transform: none !important;
-  filter: none !important;
-  transition: none !important;
+[data-scroll] {
+  --p: 0;          /* set by JS (0..1) */
+  --fromY: 28px;
+  --fromScale: 0.985;
+
+  opacity: calc(0.12 + (var(--p) * 0.88));
+  transform:
+    translate3d(0, calc((1 - var(--p)) * var(--fromY)), 0)
+    scale(calc(var(--fromScale) + (var(--p) * (1 - var(--fromScale)))));
+  filter: blur(calc((1 - var(--p)) * 6px));
+  will-change: transform, opacity, filter;
 }
 
-/* Default state (safe even without JS) */
-[data-anim] {
-  opacity: 1;
-  transform: none;
-  filter: none;
+.whyCard[data-scroll],
+.courseCardUnified[data-scroll],
+.placementsLogoCard[data-scroll],
+.gainTile[data-scroll] {
+  --fromY: 18px;
+  --fromScale: 0.99;
 }
 
-/* Animated state: only when root has .ab-anim */
-.ab-anim [data-anim],
-.ab-anim [data-reveal] {
-  --stagger: 0;
-  opacity: 0;
-  transform: translate3d(0, 14px, 0);
-  filter: none; /* ✅ NO blur */
-  transition:
-    opacity 520ms cubic-bezier(.2,.8,.2,1),
-    transform 640ms cubic-bezier(.2,.8,.2,1);
-  transition-delay: calc(min(var(--stagger), 10) * 70ms);
-  will-change: transform, opacity;
-}
-
-/* Visible state */
-.ab-anim [data-anim].is-in,
-.ab-anim [data-reveal].is-in {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
-}
-
-/* Optional: small "pop" variant if you use data-anim="pop" */
-.ab-anim [data-anim="pop"] {
-  transform: translate3d(0, 18px, 0) scale(0.985);
-}
-.ab-anim [data-anim="pop"].is-in {
-  transform: translate3d(0, 0, 0) scale(1);
-}
-
-/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .ab-anim [data-anim],
-  .ab-anim [data-reveal] {
-    opacity: 1 !important;
+  [data-scroll] {
+    opacity: 1.8 !important;
     transform: none !important;
-    transition: none !important;
+    filter: none !important;
   }
 }
+/* ========================= Scroll animation (no libs) ========================= */ [data-scroll] { --p: 0; /* set by JS (0..1) */ --fromY: 28px; --fromScale: 0.985; opacity: calc(0.12 + (var(--p) * 0.88)); transform: translate3d(0, calc((1 - var(--p)) * var(--fromY)), 0) scale(calc(var(--fromScale) + (var(--p) * (1 - var(--fromScale))))); filter: blur(calc((1 - var(--p)) * 6px)); will-change: transform, opacity, filter; } .whyCard[data-scroll], .courseCardUnified[data-scroll], .placementsLogoCard[data-scroll], .gainTile[data-scroll] { --fromY: 18px; --fromScale: 0.99; } @media (prefers-reduced-motion: reduce) { [data-scroll] { opacity: 1.8 !important; transform: none !important; filter: none !important; } }

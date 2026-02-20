@@ -1184,63 +1184,79 @@ html {
   }
 }
 /* ==========================
-   DIFFERENT scroll animation
-   (stagger + variants + parallax)
+   HOME PAGE scroll animation
+   (stagger + variants + optional parallax)
    ✅ Safe: visible by default
-   ✅ Animations only when JS adds .ab-anim
+   ✅ Animations only when JS adds .ab-anim on a wrapper
    ========================== */
 
 /* default = show content */
-[data-anim] {
+[data-anim]{
   opacity: 1;
   transform: none;
-  filter: none;
+  filter: none; /* ✅ important: no blur */
 }
 
 /* animate only when JS enabled */
-.ab-anim [data-anim] {
+.ab-anim [data-anim]{
   --stagger: 0;
+
   opacity: 0;
-  transform: translate3d(0, 18px, 0) scale(0.99);
-  filter: blur(10px);
+
+  /* subtle: slide + tiny scale */
+  transform: translate3d(0, 16px, 0) scale(0.985);
+
+  /* ✅ remove blur completely */
+  filter: none;
+
   transition:
-    opacity 700ms cubic-bezier(.2,.8,.2,1),
-    transform 800ms cubic-bezier(.2,.8,.2,1),
-    filter 800ms cubic-bezier(.2,.8,.2,1);
-  transition-delay: calc(var(--stagger) * 90ms);
-  will-change: transform, opacity, filter;
+    opacity 520ms cubic-bezier(.2,.8,.2,1),
+    transform 720ms cubic-bezier(.2,.8,.2,1);
+
+  transition-delay: calc(min(var(--stagger), 12) * 80ms);
+  will-change: transform, opacity;
 }
 
-.ab-anim [data-anim].is-in {
+.ab-anim [data-anim].is-in{
   opacity: 1;
   transform: translate3d(0, 0, 0) scale(1);
-  filter: blur(0);
 }
 
-/* Variants */
-.ab-anim [data-anim="fade"] { transform: none; }
-.ab-anim [data-anim="pop"] { transform: translate3d(0, 10px, 0) scale(0.96); }
-.ab-anim [data-anim="slideL"] { transform: translate3d(-28px, 0, 0) scale(0.99); }
-.ab-anim [data-anim="slideR"] { transform: translate3d(28px, 0, 0) scale(0.99); }
+/* Variants (use: data-anim="fade" / "pop" / "slideL" / "slideR") */
+.ab-anim [data-anim="fade"]{
+  transform: none;
+}
 
-/* Parallax targets */
-.ab-anim [data-parallax] {
+.ab-anim [data-anim="pop"]{
+  transform: translate3d(0, 10px, 0) scale(0.97);
+}
+
+.ab-anim [data-anim="slideL"]{
+  transform: translate3d(-22px, 0, 0) scale(0.99);
+}
+
+.ab-anim [data-anim="slideR"]{
+  transform: translate3d(22px, 0, 0) scale(0.99);
+}
+
+/* Optional: Parallax targets (only if your JS sets --py / --pr) */
+.ab-anim [data-parallax]{
   --py: 0px;
   --pr: 0deg;
   transform: translate3d(0, var(--py), 0) rotate(var(--pr));
-  transition: transform 250ms ease;
+  transition: transform 220ms ease;
   will-change: transform;
 }
 
 /* Accessibility */
-@media (prefers-reduced-motion: reduce) {
-  .ab-anim [data-anim] {
+@media (prefers-reduced-motion: reduce){
+  .ab-anim [data-anim]{
     opacity: 1 !important;
     transform: none !important;
     filter: none !important;
     transition: none !important;
   }
-  .ab-anim [data-parallax] {
+  .ab-anim [data-parallax]{
     transform: none !important;
     transition: none !important;
   }

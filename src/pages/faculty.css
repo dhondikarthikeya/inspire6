@@ -770,3 +770,83 @@
   background: rgba(255, 255, 255, 0.72);
   border: 1px solid rgba(15, 23, 42, 0.06);
 }
+/* ==========================
+   Scroll reveal animation
+   ========================== */
+
+.facultyPage [data-anim],
+.facultyLabs [data-anim] {
+  --stagger: 0;
+
+  opacity: 0;
+  transform: translate3d(0, 18px, 0) scale(0.99);
+  filter: blur(10px);
+
+  transition:
+    opacity 700ms cubic-bezier(.2,.8,.2,1),
+    transform 800ms cubic-bezier(.2,.8,.2,1),
+    filter 800ms cubic-bezier(.2,.8,.2,1);
+
+  transition-delay: calc(var(--stagger) * 90ms);
+  will-change: transform, opacity, filter;
+}
+
+.facultyPage [data-anim].is-in,
+.facultyLabs [data-anim].is-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  filter: blur(0);
+}
+
+/* Variants */
+.facultyPage [data-anim="fade"],
+.facultyLabs [data-anim="fade"] {
+  transform: none;
+}
+
+.facultyPage [data-anim="rise"],
+.facultyLabs [data-anim="rise"] {
+  transform: translate3d(0, 22px, 0) scale(0.995);
+}
+
+.facultyPage [data-anim="pop"],
+.facultyLabs [data-anim="pop"] {
+  transform: translate3d(0, 12px, 0) scale(0.96);
+}
+
+.facultyPage [data-anim="slideL"],
+.facultyLabs [data-anim="slideL"] {
+  transform: translate3d(-28px, 0, 0) scale(0.99);
+}
+
+.facultyPage [data-anim="slideR"],
+.facultyLabs [data-anim="slideR"] {
+  transform: translate3d(28px, 0, 0) scale(0.99);
+}
+
+/* Parallax */
+.facultyPage [data-parallax],
+.facultyLabs [data-parallax] {
+  --py: 0px;
+  --pr: 0deg;
+  transform: translate3d(0, var(--py), 0) rotate(var(--pr));
+  transition: transform 250ms ease;
+  will-change: transform;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .facultyPage [data-anim],
+  .facultyLabs [data-anim] {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+
+  .facultyPage [data-parallax],
+  .facultyLabs [data-parallax] {
+    transform: none !important;
+    transition: none !important;
+  }
+}

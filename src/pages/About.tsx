@@ -392,7 +392,7 @@ export default function About() {
         "It is with profound pleasure that I welcome you to INSPIRE INSTITUTE OF HOTEL MANAGEMENT AND CAREER. The vision behind starting this institute is to give best education in hospitality industry to deserving students with affordable fees. The institute is committed to quality at every level. The parents who send their wards to this institute, the students who study here for a career and the industry that offers placement to passed out students – everyone can be sure of quality.",
     },
     {
-      role: "Placements Director",
+      role: "Chairman",
       name: "Ms. Gangarajula Pravalika",
       imgSrc: "/images/Gangarajula.png",
       text:

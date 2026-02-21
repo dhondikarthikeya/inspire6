@@ -1,5 +1,5 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { SITE } from "../config/siteConfig";
 
 const MENU = [
@@ -10,9 +10,18 @@ const MENU = [
   { to: "/admissions", label: "Admissions" },
   { to: "/placement", label: "Placement" },
   { to: "/gallery", label: "Gallery" },
-  
   { to: "/contact", label: "Contact" },
 ];
+
+function digitsOnly(v: string) {
+  return v.replace(/\D/g, "");
+}
+
+function buildWhatsAppUrl(whatsappNumberDigitsOnly: string, message: string) {
+  const base = `https://wa.me/${whatsappNumberDigitsOnly}`;
+  const text = encodeURIComponent(message);
+  return `${base}?text=${text}`;
+}
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -30,6 +39,23 @@ export default function Header() {
   // - true: user closed the menu normally (keep their position)
   // - false: menu closed due to navigation (do NOT restore; let the new page start at top)
   const restoreScrollOnUnlockRef = useRef(true);
+
+  // ✅ WhatsApp link (same style message you asked)
+  const waHref = useMemo(() => {
+    const waDigits = digitsOnly(
+      (SITE as any).whatsappNumber ?? (SITE as any).whatsapp ?? ""
+    );
+
+    const message = `Hi Inspire ICHM–Armoor,
+
+Name: -
+Phone: -
+Course: Advanced Diploma In Hotel Management
+
+Please share eligibility, fees & admission steps.`;
+
+    return buildWhatsAppUrl(waDigits, message);
+  }, []);
 
   // Close drawer on route change (navigation)
   useEffect(() => {
@@ -308,9 +334,11 @@ export default function Header() {
               >
                 Apply Now
               </Link>
+
+              {/* ✅ UPDATED WhatsApp link */}
               <a
                 className="ctaGhost"
-                href="https://wa.me/"
+                href={waHref}
                 target="_blank"
                 rel="noreferrer"
                 onClick={() => {

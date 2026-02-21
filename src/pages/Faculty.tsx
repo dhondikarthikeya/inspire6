@@ -221,35 +221,35 @@ export default function Faculty() {
   const labs = useMemo(
     () => [
       {
-        title: "Food Production Lab",
-        desc: "Professional training kitchen equipped for culinary skills development.",
-        img: "/images/labs/lab1.jpg",
-        chips: ["Industry Tools", "Practice Stations"],
-      },
-      {
-        title: "Bakery & Patisserie Lab",
-        desc: "State-of-the-art bakery setup for learning baking and pastry making.",
-        img: "/images/labs/lab2.jpg",
-        chips: ["Industry Tools", "Practice Stations"],
-      },
-      {
-        title: "Front Office Simulation Lab",
-        desc: "Mock front office for guest service and hotel management training.",
-        img: "/images/labs/lab3.jpg",
-        chips: ["Industry Tools", "Safety Certified"],
-      },
-      {
-        title: "Housekeeping Practice Lab",
-        desc: "Hands-on housekeeping room for cleaning and room readiness training.",
-        img: "/images/labs/lab4.jpg",
-        chips: ["Safety Certified", "Practice Stations"],
-      },
-      {
-        title: "Food & Beverage Service Lab",
-        desc: "Training bar and dining area for service and mixology practice.",
-        img: "/images/labs/lab5.jpg",
-        chips: ["Industry Tools", "Service Setup"],
-      },
+  title: "Food Production Lab",
+  desc: "Advanced culinary training kitchen designed for hands-on cooking, food preparation, and professional kitchen operations practice.",
+  img: "/images/labs/lab1.jpg",
+  chips: ["Industry Tools", "Practice Stations"],
+},
+{
+  title: "F&B Service Lab",
+  desc: "Dedicated training space for food and beverage service, focusing on table setup, guest handling, service techniques, and hospitality standards.",
+  img: "/images/labs/lab2.jpg",
+  chips: ["Industry Tools", "Service Setup"],
+},
+{
+  title: "Computer Lab",
+  desc: "Modern computer facility equipped with updated systems and software for hospitality management, research, and digital learning support.",
+  img: "/images/labs/lab3.jpg",
+  chips: ["Industry Tools", "Digital Learning"],
+},
+{
+  title: "Bar Lab",
+  desc: "Professional bar setup for practical training in beverage preparation, mixology techniques, and responsible service standards.",
+  img: "/images/labs/lab4.jpg",
+  chips: ["Industry Tools", "Practice Stations"],
+},
+{
+  title: "Housekeeping Lab",
+  desc: "Fully equipped mock guest room designed for hands-on training in cleaning procedures, room setup, and housekeeping management skills.",
+  img: "/images/labs/lab5.jpg",
+  chips: ["Safety Certified", "Practice Stations"],
+},
     ],
     []
   );
@@ -444,13 +444,13 @@ export default function Faculty() {
                     <h3 className="facultyLabs__cardTitle">{lab.title}</h3>
                     <p className="facultyLabs__cardDesc">{lab.desc}</p>
 
-                    <div className="facultyLabs__chipRow" aria-label="Lab features">
+                    {/* <div className="facultyLabs__chipRow" aria-label="Lab features">
                       {lab.chips.map((c) => (
                         <span key={c} className="facultyLabs__chip">
                           {c}
                         </span>
                       ))}
-                    </div>
+                    </div> */}
                   </div>
                 </article>
               ))}

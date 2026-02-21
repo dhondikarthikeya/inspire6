@@ -142,8 +142,8 @@ export default function Contact(): JSX.Element {
     return () => document.documentElement.classList.remove("ab-anim");
   }, []);
 
-  useStaggerReveal(rootRef as any);
-  useParallax(rootRef as any);
+  useStaggerReveal(rootRef as React.RefObject<HTMLElement>);
+  useParallax(rootRef as React.RefObject<HTMLElement>);
 
   const [form, setForm] = useState<FormType>({
     name: "",
@@ -154,10 +154,12 @@ export default function Contact(): JSX.Element {
   const [errors, setErrors] = useState<{ name?: string; phone?: string }>({});
 
   const quickWaHref = useMemo(() => {
+    const phoneDigits = digitsOnly(form.phone);
+
     const message = `Hi Inspire ICHM–Armoor,
 
-Name: ${form.name || "-"}
-Phone: ${form.phone || "-"}
+Name: ${form.name.trim() || "-"}
+Phone: ${phoneDigits || "-"}
 Course: ${form.course || "-"}
 
 Please share eligibility, fees & admission steps.`;
@@ -167,10 +169,13 @@ Please share eligibility, fees & admission steps.`;
 
   const validate = () => {
     const newErrors: typeof errors = {};
+
     if (!form.name.trim()) newErrors.name = "Please enter your name.";
 
-    const len = form.phone.trim().length;
-    if (!form.phone.trim()) newErrors.phone = "Please enter your phone number.";
+    const phoneDigits = digitsOnly(form.phone);
+    const len = phoneDigits.length;
+
+    if (!phoneDigits) newErrors.phone = "Please enter your phone number.";
     else if (len < 10 || len > 12) newErrors.phone = "Phone must be 10–12 digits.";
 
     setErrors(newErrors);

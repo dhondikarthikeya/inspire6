@@ -78,7 +78,7 @@ export default function Footer() {
               </p>
 
               <div className="refFooter__ctaRow">
-                <Link className="refFooter__cta" to="/admissions">
+                <Link className="refFooter__cta" to="/contact#form">
                   Apply Now
                   <span className="refFooter__ctaIcon" aria-hidden="true">
                     →

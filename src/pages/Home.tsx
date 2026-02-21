@@ -170,24 +170,21 @@ type CourseCard = {
 
 type PlacementLogo = { src: string; alt: string };
 
-/** ✅ Web3Forms config (PUT YOUR KEY HERE) */
-const WEB3FORMS_ACCESS_KEY = "PASTE_YOUR_WEB3FORMS_ACCESS_KEY_HERE";
+/** ✅ Web3Forms config (YOUR KEY) */
+const WEB3FORMS_ACCESS_KEY = "c3307295-7de1-4399-a6ce-cd51ae81da30";
 
 /** ✅ helper to send enquiry to Web3Forms (email to you) */
 async function submitToWeb3Forms(form: EnquiryForm) {
   const fd = new FormData();
 
-  fd.append("access_key", WEB3FORMS_ACCESS_KEY);
+  // ✅ trim avoids hidden spaces/newlines
+  fd.append("access_key", WEB3FORMS_ACCESS_KEY.trim());
 
-  // Subject shown in your email inbox
   fd.append("subject", `New Student Enquiry: ${form.name}`);
-
-  // The fields you want in email
   fd.append("name", form.name.trim());
   fd.append("phone", digitsOnly(form.phone));
   fd.append("course", form.course);
 
-  // Extra info (optional)
   fd.append("from_site", SITE.name);
   fd.append("location", SITE.location);
 
@@ -196,7 +193,14 @@ async function submitToWeb3Forms(form: EnquiryForm) {
     body: fd,
   });
 
-  const data = await res.json().catch(() => null);
+  // ✅ safer: sometimes server returns HTML -> JSON.parse would fail
+  const raw = await res.text();
+  let data: any = null;
+  try {
+    data = JSON.parse(raw);
+  } catch {
+    throw new Error(`Server returned non-JSON response: ${raw.slice(0, 80)}...`);
+  }
 
   if (!res.ok || !data?.success) {
     const msg = data?.message || "Failed to submit form";
@@ -284,11 +288,6 @@ Please share eligibility, fees & admission steps.`;
     const v = validate(form);
     setErrors(v);
     if (Object.keys(v).length) return;
-
-    if (!WEB3FORMS_ACCESS_KEY || WEB3FORMS_ACCESS_KEY.includes("PASTE_YOUR")) {
-      setSubmitStatus("❌ Web3Forms access key missing. Please add your access key in code.");
-      return;
-    }
 
     try {
       setIsSubmitting(true);

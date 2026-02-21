@@ -171,6 +171,17 @@ export default function Faculty() {
   const faculty = useMemo<FacultyMember[]>(
     () => [
       {
+        id: "f4",
+        name: "Mr. Gunnala Ranjith Kumar",
+        designation: "HEAD OF DEPARTMENT",
+        dept: "Housekeeping HOD",
+        years: "10+ Years",
+        bio: "Detail-oriented housekeeping specialist with expertise in guest room management and cleanliness.",
+        img: "/images/faculty/f4.png",
+        linkedin: "#",
+        email: "mailto:info@example.com",
+      },
+      {
         id: "f1",
         name: "Prof. Anil Sharma",
         designation: "Head of Department",
@@ -203,17 +214,7 @@ export default function Faculty() {
         linkedin: "#",
         email: "mailto:info@example.com",
       },
-      {
-        id: "f4",
-        name: "Ms. Sneha Reddy",
-        designation: "Lecturer",
-        dept: "Housekeeping",
-        years: "8+ Years",
-        bio: "Detail-oriented housekeeping specialist with expertise in guest room management and cleanliness.",
-        img: "/images/faculty/f4.png",
-        linkedin: "#",
-        email: "mailto:info@example.com",
-      },
+      
     ],
     []
   );
@@ -359,7 +360,7 @@ export default function Faculty() {
 
                   <p className="facultyPage__bio">{m.bio}</p>
 
-                  <div className="facultyPage__actions" aria-label="Faculty links">
+                  {/* <div className="facultyPage__actions" aria-label="Faculty links">
                     <a
                       className="facultyPage__iconBtn"
                       href={m.linkedin || "#"}
@@ -373,7 +374,7 @@ export default function Faculty() {
                     <a className="facultyPage__iconBtn" href={m.email || "#"} aria-label="Email" title="Email">
                       <MailIcon />
                     </a>
-                  </div>
+                  </div> */}
                 </div>
               </article>
             ))}

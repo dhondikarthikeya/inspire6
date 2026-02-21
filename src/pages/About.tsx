@@ -385,7 +385,7 @@ export default function About() {
         "Welcome to an Institute where Hoteliering is not just a profession but a lifestyle; where we transform students into showmen and distinguished personalities with unparalleled intelligence and wisdom—individuals who never give up, who embrace a positive attitude and a strong “can do” approach.Here, passion meets precision, discipline shapes character, and excellence becomes a lifelong commitment to global leadership.",
     },
     {
-      role: "Managing Director and Chairman",
+      role: "Chairman and Managing Director",
       name: "Mr. Kampadandi Vinod Kumar",
       imgSrc: "/images/vinod.png",
       text:
